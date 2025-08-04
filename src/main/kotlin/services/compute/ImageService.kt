@@ -2,18 +2,9 @@ package my.proj.work.services.compute
 
 import my.proj.work.services.IMetricService
 import org.openstack4j.api.OSClient.OSClientV3
+import org.openstack4j.model.compute.Image.Status
 import java.util.*
 
-data class ImageDTO(
-    var id: String?,
-    var name: String?,
-    var minRam: Int?,
-    var minDisk: Int?,
-    var size: Long?,
-    var status: String?,
-    var created: Date?,
-    var updated: Date?
-)
 
 class ImageService(override val client: OSClientV3) : IMetricService {
     fun toJson(): String? {
@@ -28,11 +19,22 @@ class ImageService(override val client: OSClientV3) : IMetricService {
                 minRam = image.minRam,
                 minDisk = image.minDisk,
                 size = image.size,
-                status = image.status.name,
+                status = image.status,
                 created = image.created,
                 updated = image.updated
             )
         }
         return imageDto
     }
+
+    data class ImageDTO(
+        var id: String?,
+        var name: String?,
+        var minRam: Int?,
+        var minDisk: Int?,
+        var size: Long?,
+        var status: Status?,
+        var created: Date?,
+        var updated: Date?
+    )
 }

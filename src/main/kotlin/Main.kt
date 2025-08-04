@@ -24,7 +24,7 @@ fun main() {
     toJson(os.compute().zones().list(), "compute/zones")
     FlavorService(os).toJson()
     ServerService(os).toJson()
-    toJson(os.compute().floatingIps().list(), "compute/floatingIps")
+    toJson(os.compute().floatingIps().list(), "compute/floatingIpsq")
     toJson(os.compute().hostAggregates().list(), "compute/hostAggregates")
     toJson(os.compute().hypervisors().list(), "compute/hypervisors")
     toJson(os.compute().keypairs().list(), "compute/keypairs")

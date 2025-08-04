@@ -4,16 +4,6 @@ import my.proj.work.services.IMetricService
 import org.openstack4j.api.OSClient.OSClientV3
 import org.openstack4j.model.compute.Flavor
 
-data class FlavorDTO(
-    var id: String?,
-    var name: String?,
-    var ram: Int?,
-    var vcpu: Int?,
-    var disk: Int?,
-    var ephemeral: Int?,
-    var swap: Int?
-)
-
 class FlavorService(override val client: OSClientV3) : IMetricService {
     fun toJson(): String? {
         return toJson(convertToDto(), "compute/flavors")
@@ -37,4 +27,14 @@ class FlavorService(override val client: OSClientV3) : IMetricService {
             swap = flavor?.swap
         )
     }
+
+    data class FlavorDTO(
+        var id: String?,
+        var name: String?,
+        var ram: Int?,
+        var vcpu: Int?,
+        var disk: Int?,
+        var ephemeral: Int?,
+        var swap: Int?
+    )
 }
