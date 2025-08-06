@@ -10,7 +10,8 @@ import org.openstack4j.openstack.OSFactory
 import java.io.File
 
 val os: OSClientV3 = OSFactory.builderV3().endpoint("https://10.0.2.15:5000/v3")
-    .credentials("admin", "4bea85208709a9b37328c276cd82f509977", Identifier.byId("default")).authenticate()
+    .credentials("e6a47c690cf84969b594d33000fbbda3", "4bea85208709a9b37328c276cd82f509977")
+    .authenticate()
 
 fun toJson(list: List<Any>, metric: String?) {
     val gson = GsonBuilder().serializeNulls().setPrettyPrinting().create()
@@ -39,7 +40,7 @@ fun main() {
     toJson(os.blockStorage().services().list(), "blockStorage/services")
 
     toJson(os.networking().network().list(), "networking/network")
-    toJson(os.networking().subnet().list(), "networking/network")
+    toJson(os.networking().subnet().list(), "networking/subnet")
     toJson(os.networking().port().list(), "networking/port")
     toJson(os.networking().router().list(), "networking/router")
     toJson(os.networking().securitygroup().list(), "networking/securitygroup")
