@@ -1,14 +1,18 @@
 package services.wrappers
 
-import java.net.HttpURLConnection
-import java.net.URL
+import java.net.URI
+import java.net.http.HttpClient
+import java.net.http.HttpRequest
+import java.net.http.HttpResponse
 
 class IdentityWrapper(
     private val keystoneUrl: String,
     private val username: String,
     private val password: String
 ) {
-    private fun getToken(keystoneUrl: String, username: String, password: String): String {
+    private val httpClient = HttpClient.newBuilder().build()
+
+    private fun getToken(): String {
         val authJson = """
         {
           "auth": {
@@ -32,49 +36,66 @@ class IdentityWrapper(
         }
     """.trimIndent()
 
-        val url = URL("$keystoneUrl/auth/tokens")
-        val connection = url.openConnection() as HttpURLConnection
-        connection.requestMethod = "POST"
-        connection.setRequestProperty("Content-Type", "application/json")
-        connection.doOutput = true
+        val request = HttpRequest.newBuilder()
+            .uri(URI.create("$keystoneUrl/auth/tokens"))
+            .header("Content-Type", "application/json")
+            .POST(HttpRequest.BodyPublishers.ofString(authJson))
+            .build()
 
-        connection.outputStream.use { os ->
-            os.write(authJson.toByteArray(Charsets.UTF_8))
+        val response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
+        if (response.statusCode() != 201) {
+            throw RuntimeException("Failed to authentificate: ${response.statusCode()} ${response.body()}")
         }
 
-        val token = connection.getHeaderField("X-Subject-Token")
-            ?: throw RuntimeException("Failed to get token from Keystone")
-
-        return token
-    }
-
-    private fun getRequest(url: URL, token: String): String {
-        val connection = url.openConnection() as HttpURLConnection
-        connection.requestMethod = "GET"
-        connection.setRequestProperty("X-Auth-Token", token)
-        connection.setRequestProperty("Content-Type", "application/json")
-
-        return connection.inputStream.bufferedReader().use { it.readText() }
+        return response.headers().firstValue("X-Subject-Token")
+            .orElseThrow { RuntimeException("Missing X-Subject-Token") }
     }
 
     fun getUsers(): String {
-        val token = getToken(keystoneUrl, username, password)
-        val url = URL("$keystoneUrl/users")
+        val token = getToken()
+        val request = HttpRequest.newBuilder()
+            .uri(URI.create("$keystoneUrl/users"))
+            .header("X-Auth-Token", token)
+            .GET()
+            .build()
 
-        return getRequest(url, token)
+        val response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
+        if (response.statusCode() !in 200..209) {
+            throw RuntimeException("Failed to get users: ${response.statusCode()} ${response.body()}")
+        }
+
+        return response.body()
     }
 
     fun getGroups(): String {
-        val token = getToken(keystoneUrl, username, password)
-        val url = URL("$keystoneUrl/groups")
+        val token = getToken()
+        val request = HttpRequest.newBuilder()
+            .uri(URI.create("$keystoneUrl/groups"))
+            .header("X-Auth-Token", token)
+            .GET()
+            .build()
 
-        return getRequest(url, token)
+        val response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
+        if (response.statusCode() !in 200..209) {
+            throw RuntimeException("Failed to get groups: ${response.statusCode()} ${response.body()}")
+        }
+
+        return response.body()
     }
 
     fun getProjects(): String {
-        val token = getToken(keystoneUrl, username, password)
-        val url = URL("$keystoneUrl/projects")
+        val token = getToken()
+        val request = HttpRequest.newBuilder()
+            .uri(URI.create("$keystoneUrl/projects"))
+            .header("X-Auth-Token", token)
+            .GET()
+            .build()
 
-        return getRequest(url, token)
+        val response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
+        if (response.statusCode() !in 200..209) {
+            throw RuntimeException("Failed to get projects: ${response.statusCode()} ${response.body()}")
+        }
+
+        return response.body()
     }
 }
