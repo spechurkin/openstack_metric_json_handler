@@ -1,12 +1,12 @@
-package my.proj.work.services.compute
+package services.compute
 
-import my.proj.work.services.IMetricService
 import org.openstack4j.api.OSClient.OSClientV3
 import org.openstack4j.model.compute.Flavor
+import services.IMetricService
 
 class FlavorService(override val client: OSClientV3) : IMetricService {
-    fun toJson(): String? {
-        return toJson(convertToDto(), "compute/flavors")
+    fun getFlavors(): List<FlavorDTO> {
+        return convertToDto()
     }
 
     private fun convertToDto(): List<FlavorDTO> {

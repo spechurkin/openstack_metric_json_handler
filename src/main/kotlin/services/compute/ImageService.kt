@@ -1,14 +1,14 @@
-package my.proj.work.services.compute
+package services.compute
 
-import my.proj.work.services.IMetricService
 import org.openstack4j.api.OSClient.OSClientV3
 import org.openstack4j.model.compute.Image.Status
+import services.IMetricService
 import java.util.*
 
 
 class ImageService(override val client: OSClientV3) : IMetricService {
-    fun toJson(): String? {
-        return toJson(convertToDto(), "compute/images")
+    fun getImages(): List<ImageDTO> {
+        return convertToDto()
     }
 
     private fun convertToDto(): List<ImageDTO> {

@@ -1,14 +1,13 @@
-package my.proj.work.services.compute
+package services.compute
 
-import my.proj.work.services.IMetricService
 import org.openstack4j.api.OSClient.OSClientV3
 import org.openstack4j.model.compute.Server.Status
+import services.IMetricService
 import java.util.*
 
-
 class ServerService(override val client: OSClientV3) : IMetricService {
-    fun toJson(): String? {
-        return toJson(convertToDto(), "compute/servers")
+    fun getServers(): List<ServerDTO> {
+        return convertToDto()
     }
 
     private fun convertToDto(): List<ServerDTO> {

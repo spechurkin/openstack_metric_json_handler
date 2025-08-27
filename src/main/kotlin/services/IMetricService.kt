@@ -1,4 +1,4 @@
-package my.proj.work.services
+package services
 
 import com.google.gson.GsonBuilder
 import org.openstack4j.api.OSClient.OSClientV3
