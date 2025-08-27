@@ -42,7 +42,16 @@ fun main() {
     println(wrapper.identity().getGroups())
     println(wrapper.identity().getProjects())
 
-//    toJson(os.compute().securityGroups().list().map { group ->
-//        group.rules
-//    }, "compute/rules")
+    println(wrapper.blockStorage().getVolumes())
+    println(wrapper.blockStorage().getBackups())
+    println(wrapper.blockStorage().getSnapshots())
+    println(wrapper.blockStorage().getServices())
+
+    println(wrapper.networking().getNetworks())
+    println(wrapper.networking().getSubnets())
+    println(wrapper.networking().getRouters())
+    println(wrapper.networking().getPorts())
+    println(wrapper.networking().getQuotas())
+    println(wrapper.networking().getFloatingIps())
+    println(wrapper.networking().getSecurityGroups())
 }

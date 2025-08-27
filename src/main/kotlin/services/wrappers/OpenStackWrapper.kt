@@ -3,7 +3,6 @@ package services.wrappers
 import org.openstack4j.api.OSClient.OSClientV3
 import org.openstack4j.model.common.Identifier
 import org.openstack4j.openstack.OSFactory
-import services.wrappers.IdentityWrapper
 
 class OpenStackWrapper(
     private val authUrl: String,
@@ -27,5 +26,13 @@ class OpenStackWrapper(
 
     fun identity(): IdentityWrapper {
         return IdentityWrapper(authUrl, username, password)
+    }
+
+    fun blockStorage(): BlockStorageWrapper {
+        return BlockStorageWrapper(os)
+    }
+
+    fun networking(): NetworkingWrapper {
+        return NetworkingWrapper(os)
     }
 }
