@@ -1,5 +1,6 @@
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonParser
+import services.wrappers.OpenStackWrapper
 import java.io.File
 
 val identityUrl = "https://10.0.2.15:5000/v3/"

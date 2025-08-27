@@ -1,8 +1,9 @@
+package services.wrappers
+
 import org.openstack4j.api.OSClient.OSClientV3
 import org.openstack4j.model.common.Identifier
 import org.openstack4j.openstack.OSFactory
-import services.compute.ComputeWrapper
-import services.identity.IdentityWrapper
+import services.wrappers.IdentityWrapper
 
 class OpenStackWrapper(
     private val authUrl: String,
