@@ -4,16 +4,20 @@ import IdentityExtractionService
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonParser
 import org.openstack4j.api.OSClient.OSClientV3
+import org.openstack4j.core.transport.Config
 import org.openstack4j.model.common.Identifier
 import org.openstack4j.openstack.OSFactory
 import java.io.File
 
-val identityUrl = "https://10.0.2.15:5000/v3"
+val identityUrl = "https://10.0.2.15:5000/v3/"
 val login = "admin"
-val password = "4bea85208709a9b37328c276cd82f509977"
+val password = "59da528341503a01d9f1df2e5fcb5d76f8c07e64ab791c59937a93"
 
-val os: OSClientV3 = OSFactory.builderV3().endpoint(identityUrl)
-    .credentials(login, password, Identifier.byName("default"))
+val os = OSFactory.builderV3()
+    .endpoint(identityUrl)
+    .credentials(login, password, Identifier.byName("Default"))
+    .scopeToProject(Identifier.byName("admin"), Identifier.byName("Default"))
+    .withConfig(Config.newConfig().withSSLVerificationDisabled())
     .authenticate()
 
 fun toJson(list: List<Any>, metric: String?) {
