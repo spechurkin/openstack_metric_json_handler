@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>my.proj.work</groupId>
-    <artifactId>openstack</artifactId>
+    <artifactId>openstackextractionlib</artifactId>
     <version>0.1</version>
     <packaging>pom</packaging>
     <developers>
@@ -45,7 +45,7 @@
     </repositories>
 
     <build>
-        <sourceDirectory>../src/main/kotlin</sourceDirectory>
+        <sourceDirectory>src/main/kotlin</sourceDirectory>
         <testSourceDirectory>../src/test/kotlin</testSourceDirectory>
 
         <plugins>
