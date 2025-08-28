@@ -8,8 +8,8 @@ class OpenStackWrapper(
     private val authUrl: String,
     private val username: String,
     private val password: String,
-    private val domain: String,
-    private val project: String
+    domain: String,
+    project: String
 ) {
     private val os: OSClientV3 = OSFactory.builderV3()
         .endpoint(authUrl)

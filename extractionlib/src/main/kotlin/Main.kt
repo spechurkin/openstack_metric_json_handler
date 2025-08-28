@@ -1,8 +1,10 @@
+package my.proj.work
+
 import services.wrappers.OpenStackWrapper
 
-val identityUrl = "https://10.0.2.15:5000/v3/"
-val login = "admin"
-val password = "59da528341503a01d9f1df2e5fcb5d76f8c07e64ab791c59937a93"
+const val identityUrl = "https://10.0.2.15:5000/v3/"
+const val login = "admin"
+const val password = "59da528341503a01d9f1df2e5fcb5d76f8c07e64ab791c59937a93"
 
 fun main() {
     val wrapper = OpenStackWrapper(identityUrl, login, password, "default", "admin")
