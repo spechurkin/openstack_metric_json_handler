@@ -20,19 +20,8 @@ class OpenStackWrapper(
         )
         .authenticate()
 
-    fun compute(): ComputeWrapper {
-        return ComputeWrapper(os)
-    }
-
-    fun identity(): IdentityWrapper {
-        return IdentityWrapper(authUrl, username, password)
-    }
-
-    fun blockStorage(): BlockStorageWrapper {
-        return BlockStorageWrapper(os)
-    }
-
-    fun networking(): NetworkingWrapper {
-        return NetworkingWrapper(os)
-    }
+    val compute = ComputeWrapper(os)
+    val identity = IdentityWrapper(authUrl, username, password)
+    val blockStorage = BlockStorageWrapper(os)
+    val networking = NetworkingWrapper(os)
 }
