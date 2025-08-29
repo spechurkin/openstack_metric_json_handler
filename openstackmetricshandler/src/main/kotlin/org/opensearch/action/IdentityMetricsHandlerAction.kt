@@ -15,7 +15,8 @@ class IdentityMetricsHandlerAction(private val manager: OpenStackManager) : Abst
         return listOf(
             RestHandler.Route(RestRequest.Method.GET, "/nn2/identity/volumes"),
             RestHandler.Route(RestRequest.Method.GET, "/nn2/identity/backups"),
-            RestHandler.Route(RestRequest.Method.GET, "/nn2/identity/snapshots")
+            RestHandler.Route(RestRequest.Method.GET, "/nn2/identity/snapshots"),
+            RestHandler.Route(RestRequest.Method.GET, "/nn2/identity/domains")
         )
     }
 
@@ -33,6 +34,7 @@ class IdentityMetricsHandlerAction(private val manager: OpenStackManager) : Abst
                     "volumes" -> dto = wrapper.getUsers()
                     "backups" -> dto = wrapper.getGroups()
                     "snapshots" -> dto = wrapper.getProjects()
+                    "domains" -> dto = wrapper.getDomains()
                 }
                 channel.sendResponse(
                     okJson(dto.toString())

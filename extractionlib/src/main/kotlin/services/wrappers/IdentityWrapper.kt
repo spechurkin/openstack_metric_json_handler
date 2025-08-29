@@ -98,4 +98,20 @@ class IdentityWrapper(
 
         return response.body()
     }
+
+    fun getDomains(): String {
+        val token = getToken()
+        val request = HttpRequest.newBuilder()
+            .uri(URI.create("$keystoneUrl/domains"))
+            .header("X-Auth-Token", token)
+            .GET()
+            .build()
+
+        val response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
+        if (response.statusCode() !in 200..209) {
+            throw RuntimeException("Failed to get projects: ${response.statusCode()} ${response.body()}")
+        }
+
+        return response.body()
+    }
 }

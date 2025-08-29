@@ -29,6 +29,7 @@ fun main() {
     println(wrapper.identity().getUsers())
     println(wrapper.identity().getGroups())
     println(wrapper.identity().getProjects())
+    println(wrapper.identity().getDomains())
 
     println(wrapper.blockStorage().getVolumes())
     println(wrapper.blockStorage().getBackups())
