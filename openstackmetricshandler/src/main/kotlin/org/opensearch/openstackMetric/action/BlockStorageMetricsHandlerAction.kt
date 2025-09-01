@@ -1,11 +1,11 @@
-package org.opensearch.action
+package org.opensearch.openstackMetric.action
 
 import org.opensearch.common.Table
-import org.opensearch.config.OpenStackManager
-import org.opensearch.config.err
-import org.opensearch.config.gson
-import org.opensearch.config.okJson
 import org.opensearch.core.rest.RestStatus
+import org.opensearch.openstackMetric.config.OpenStackManager
+import org.opensearch.openstackMetric.config.err
+import org.opensearch.openstackMetric.config.gson
+import org.opensearch.openstackMetric.config.okJson
 import org.opensearch.rest.RestHandler
 import org.opensearch.rest.RestRequest
 import org.opensearch.rest.action.cat.AbstractCatAction
@@ -46,9 +46,17 @@ class BlockStorageMetricsHandlerAction(private val manager: OpenStackManager) : 
         }
     }
 
-    override fun documentation(p0: java.lang.StringBuilder?) {
-        TODO("Not yet implemented")
+    override fun documentation(sb: StringBuilder) {
+        sb.append(
+            """
+                /nn2/blockStorage/volumes
+                /nn2/blockStorage/backups
+                /nn2/blockStorage/snapshots
+                /nn2/blockStorage/services
+            """.trimIndent()
+        )
     }
+
 
     override fun getTableWithHeader(rr: RestRequest?): Table? {
         return Table()

@@ -1,8 +1,8 @@
-package org.opensearch.action
+package org.opensearch.openstackMetric.action
 
 import org.opensearch.common.Table
-import org.opensearch.config.*
 import org.opensearch.core.rest.RestStatus
+import org.opensearch.openstackMetric.config.*
 import org.opensearch.rest.RestHandler
 import org.opensearch.rest.RestRequest
 import org.opensearch.rest.action.cat.AbstractCatAction
@@ -62,7 +62,11 @@ class ConfigHandlerAction(
                 }
             }
 
-            RestRequest.Method.GET -> {
+            RestRequest.Method.HEAD,
+            RestRequest.Method.GET,
+            RestRequest.Method.PUT,
+            RestRequest.Method.PATCH,
+            RestRequest.Method.CONNECT -> {
                 return RestChannelConsumer { channel ->
                     val cfg = manager.getConfig()
                     if (cfg == null) channel.sendResponse(err(RestStatus.NOT_FOUND, "Config not set"))
@@ -70,19 +74,38 @@ class ConfigHandlerAction(
                 }
             }
 
-            RestRequest.Method.PUT -> TODO()
-            RestRequest.Method.DELETE -> TODO()
-            RestRequest.Method.OPTIONS -> TODO()
-            RestRequest.Method.HEAD -> TODO()
-            RestRequest.Method.PATCH -> TODO()
-            RestRequest.Method.TRACE -> TODO()
-            RestRequest.Method.CONNECT -> TODO()
-            null -> TODO()
+            RestRequest.Method.DELETE -> {
+                return RestChannelConsumer { channel ->
+                    channel.sendResponse(err(RestStatus.NOT_FOUND, "Config not set"))
+                }
+            }
+
+            RestRequest.Method.OPTIONS -> {
+                return RestChannelConsumer { channel ->
+                    channel.sendResponse(err(RestStatus.NOT_FOUND, "Config not set"))
+                }
+            }
+
+            RestRequest.Method.TRACE -> {
+                return RestChannelConsumer { channel ->
+                    channel.sendResponse(err(RestStatus.NOT_FOUND, "Config not set"))
+                }
+            }
+
+            null -> {
+                return RestChannelConsumer { channel ->
+                    channel.sendResponse(err(RestStatus.NOT_FOUND, "Config not set"))
+                }
+            }
         }
     }
 
-    override fun documentation(p0: java.lang.StringBuilder?) {
-        TODO("Not yet implemented")
+    override fun documentation(sb: StringBuilder) {
+        sb.append(
+            """
+                /nn2/openstack/config
+            """.trimIndent()
+        )
     }
 
     override fun getTableWithHeader(rr: RestRequest?): Table? {

@@ -1,11 +1,11 @@
-package org.opensearch.action
+package org.opensearch.openstackMetric.action
 
 import org.opensearch.common.Table
-import org.opensearch.config.OpenStackManager
-import org.opensearch.config.err
-import org.opensearch.config.gson
-import org.opensearch.config.okJson
 import org.opensearch.core.rest.RestStatus
+import org.opensearch.openstackMetric.config.OpenStackManager
+import org.opensearch.openstackMetric.config.err
+import org.opensearch.openstackMetric.config.gson
+import org.opensearch.openstackMetric.config.okJson
 import org.opensearch.rest.RestChannel
 import org.opensearch.rest.RestHandler
 import org.opensearch.rest.RestRequest
@@ -67,8 +67,25 @@ class ComputeMetricsHandlerAction(private val manager: OpenStackManager) : Abstr
         }
     }
 
-    override fun documentation(p0: java.lang.StringBuilder?) {
-        TODO("Not yet implemented")
+    override fun documentation(sb: StringBuilder) {
+        sb.append(
+            """
+                /nn2/compute/servers
+                /nn2/compute/images
+                /nn2/compute/flavors
+                /nn2/compute/keypairs
+                /nn2/compute/services
+                /nn2/compute/floatingIps
+                /nn2/compute/hosts
+                /nn2/compute/zones
+                /nn2/compute/migrations
+                /nn2/compute/hypervisors
+                /nn2/compute/hostAggregates
+                /nn2/compute/serverGroups
+                /nn2/compute/securityGroups
+                /nn2/compute/securityRules
+            """.trimIndent()
+        )
     }
 
     override fun getTableWithHeader(rr: RestRequest?): Table? {

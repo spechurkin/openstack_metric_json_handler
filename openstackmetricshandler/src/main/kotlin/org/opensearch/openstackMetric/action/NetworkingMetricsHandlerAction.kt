@@ -1,11 +1,11 @@
-package org.opensearch.action
+package org.opensearch.openstackMetric.action
 
 import org.opensearch.common.Table
-import org.opensearch.config.OpenStackManager
-import org.opensearch.config.err
-import org.opensearch.config.gson
-import org.opensearch.config.okJson
 import org.opensearch.core.rest.RestStatus
+import org.opensearch.openstackMetric.config.OpenStackManager
+import org.opensearch.openstackMetric.config.err
+import org.opensearch.openstackMetric.config.gson
+import org.opensearch.openstackMetric.config.okJson
 import org.opensearch.rest.RestChannel
 import org.opensearch.rest.RestHandler
 import org.opensearch.rest.RestRequest
@@ -53,13 +53,23 @@ class NetworkingMetricsHandlerAction(private val manager: OpenStackManager) : Ab
         }
     }
 
-    override fun documentation(p0: java.lang.StringBuilder?) {
-        TODO("Not yet implemented")
+    override fun documentation(sb: StringBuilder) {
+        sb.append(
+            """
+                /nn2/networking/network
+                /nn2/networking/subnet
+                /nn2/networking/port
+                /nn2/networking/router
+                /nn2/networking/securitygroup
+                /nn2/networking/quotas
+                /nn2/networking/floatingip
+            """.trimIndent()
+        )
     }
 
     override fun getTableWithHeader(rr: RestRequest?): Table? {
         return Table()
     }
 
-    override fun getName(): String? = "storage_metric_handler"
+    override fun getName(): String? = "network_metric_handler"
 }

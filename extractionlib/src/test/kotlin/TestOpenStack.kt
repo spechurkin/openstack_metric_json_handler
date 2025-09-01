@@ -1,4 +1,4 @@
-package my.proj.work
+package proj.work
 
 import services.wrappers.OpenStackWrapper
 

@@ -8,7 +8,7 @@ class NetworkingWrapper(val client: OSClientV3) {
         return client.networking().network().list()
     }
 
-    fun getSubnets(): List<Subnet?>? {6
+    fun getSubnets(): List<Subnet?>? {
         return client.networking().subnet().list()
     }
 

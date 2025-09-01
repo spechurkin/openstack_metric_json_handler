@@ -1,4 +1,4 @@
-package org.opensearch.config
+package org.opensearch.openstackMetric.config
 
 import services.wrappers.OpenStackWrapper
 import java.util.concurrent.atomic.AtomicReference
