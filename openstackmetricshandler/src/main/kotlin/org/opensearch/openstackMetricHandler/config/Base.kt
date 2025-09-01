@@ -1,4 +1,4 @@
-package org.opensearch.openstackMetric.config
+package org.opensearch.openstackMetricHandler.config
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder

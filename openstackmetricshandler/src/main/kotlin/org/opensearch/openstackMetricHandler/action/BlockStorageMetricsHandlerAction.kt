@@ -1,11 +1,11 @@
-package org.opensearch.openstackMetric.action
+package org.opensearch.openstackMetricHandler.action
 
 import org.opensearch.common.Table
 import org.opensearch.core.rest.RestStatus
-import org.opensearch.openstackMetric.config.OpenStackManager
-import org.opensearch.openstackMetric.config.err
-import org.opensearch.openstackMetric.config.gson
-import org.opensearch.openstackMetric.config.okJson
+import org.opensearch.openstackMetricHandler.config.OpenStackManager
+import org.opensearch.openstackMetricHandler.config.err
+import org.opensearch.openstackMetricHandler.config.gson
+import org.opensearch.openstackMetricHandler.config.okJson
 import org.opensearch.rest.RestHandler
 import org.opensearch.rest.RestRequest
 import org.opensearch.rest.action.cat.AbstractCatAction

@@ -1,8 +1,8 @@
-package org.opensearch.openstackMetric.action
+package org.opensearch.openstackMetricHandler.action
 
 import org.opensearch.common.Table
 import org.opensearch.core.rest.RestStatus
-import org.opensearch.openstackMetric.config.*
+import org.opensearch.openstackMetricHandler.config.*
 import org.opensearch.rest.RestHandler
 import org.opensearch.rest.RestRequest
 import org.opensearch.rest.action.cat.AbstractCatAction

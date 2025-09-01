@@ -4,12 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>my.proj.work</groupId>
+        <groupId>proj.work</groupId>
         <artifactId>openstack</artifactId>
         <version>0.1</version>
     </parent>
 
     <artifactId>extractionlib</artifactId>
+    <packaging>jar</packaging>
 
     <properties>
         <kotlin.version>1.9.24</kotlin.version>
@@ -37,6 +38,29 @@
     <build>
         <sourceDirectory>src/main/kotlin</sourceDirectory>
         <testSourceDirectory>src/test/kotlin</testSourceDirectory>
+
+        <plugins>
+            <plugin>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>compile</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>test-compile</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>test-compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 
     <dependencies>
@@ -44,7 +68,6 @@
             <groupId>org.pacesys</groupId>
             <artifactId>openstack4j-core</artifactId>
             <version>3.1.0</version>
-            <classifier>withdeps</classifier>
         </dependency>
         <dependency>
             <groupId>org.pacesys.openstack4j.connectors</groupId>
@@ -70,12 +93,7 @@
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <version>23.0.0</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>1.7.36</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

@@ -1,4 +1,4 @@
-package org.opensearch.openstackMetric
+package org.opensearch.openstackMetricHandler
 
 import org.opensearch.cluster.metadata.IndexNameExpressionResolver
 import org.opensearch.cluster.node.DiscoveryNodes
@@ -6,12 +6,12 @@ import org.opensearch.common.settings.ClusterSettings
 import org.opensearch.common.settings.IndexScopedSettings
 import org.opensearch.common.settings.Settings
 import org.opensearch.common.settings.SettingsFilter
-import org.opensearch.openstackMetric.config.OpenStackManager
-import org.opensearch.openstackMetric.action.BlockStorageMetricsHandlerAction
-import org.opensearch.openstackMetric.action.ComputeMetricsHandlerAction
-import org.opensearch.openstackMetric.action.ConfigHandlerAction
-import org.opensearch.openstackMetric.action.IdentityMetricsHandlerAction
-import org.opensearch.openstackMetric.action.NetworkingMetricsHandlerAction
+import org.opensearch.openstackMetricHandler.config.OpenStackManager
+import org.opensearch.openstackMetricHandler.action.BlockStorageMetricsHandlerAction
+import org.opensearch.openstackMetricHandler.action.ComputeMetricsHandlerAction
+import org.opensearch.openstackMetricHandler.action.ConfigHandlerAction
+import org.opensearch.openstackMetricHandler.action.IdentityMetricsHandlerAction
+import org.opensearch.openstackMetricHandler.action.NetworkingMetricsHandlerAction
 import org.opensearch.plugins.ActionPlugin
 import org.opensearch.plugins.Plugin
 import org.opensearch.rest.RestController
