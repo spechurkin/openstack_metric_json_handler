@@ -21,7 +21,7 @@
         <kotlin.code.style>official</kotlin.code.style>
         <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
 
-        <opensearch.version>3.0.0</opensearch.version>
+        <opensearch.version>2.18.0</opensearch.version>
     </properties>
 
     <repositories>
@@ -153,7 +153,7 @@
         <dependency>
             <groupId>org.opensearch</groupId>
             <artifactId>opensearch</artifactId>
-            <version>3.0.0</version>
+            <version>${opensearch.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

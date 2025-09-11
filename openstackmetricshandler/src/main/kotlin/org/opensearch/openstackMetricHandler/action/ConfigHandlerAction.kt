@@ -1,12 +1,12 @@
 package org.opensearch.openstackMetricHandler.action
 
+import org.opensearch.client.node.NodeClient
 import org.opensearch.common.Table
 import org.opensearch.core.rest.RestStatus
 import org.opensearch.openstackMetricHandler.config.*
 import org.opensearch.rest.RestHandler
 import org.opensearch.rest.RestRequest
 import org.opensearch.rest.action.cat.AbstractCatAction
-import org.opensearch.transport.client.node.NodeClient
 
 class ConfigHandlerAction(
     private val manager: OpenStackManager
@@ -19,12 +19,12 @@ class ConfigHandlerAction(
     }
 
     override fun doCatRequest(
-        restRequest: RestRequest?,
-        client: NodeClient?
+        p0: RestRequest?,
+        p1: NodeClient?
     ): RestChannelConsumer? {
-        when (restRequest?.method()) {
+        when (p0?.method()) {
             RestRequest.Method.POST -> {
-                val body: String = restRequest.content().utf8ToString().ifBlank { "{}" }
+                val body: String = p0.content().utf8ToString().ifBlank { "{}" }
                 val cfg: OpenStackConfig = try {
                     gson.fromJson(body, OpenStackConfig::class.java)
                 } catch (e: Exception) {

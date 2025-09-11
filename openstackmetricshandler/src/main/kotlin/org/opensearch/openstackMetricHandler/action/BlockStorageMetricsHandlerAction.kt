@@ -1,5 +1,6 @@
 package org.opensearch.openstackMetricHandler.action
 
+import org.opensearch.client.node.NodeClient
 import org.opensearch.common.Table
 import org.opensearch.core.rest.RestStatus
 import org.opensearch.openstackMetricHandler.config.OpenStackManager
@@ -9,7 +10,6 @@ import org.opensearch.openstackMetricHandler.config.okJson
 import org.opensearch.rest.RestHandler
 import org.opensearch.rest.RestRequest
 import org.opensearch.rest.action.cat.AbstractCatAction
-import org.opensearch.transport.client.node.NodeClient
 
 class BlockStorageMetricsHandlerAction(private val manager: OpenStackManager) : AbstractCatAction() {
     override fun routes(): List<RestHandler.Route?>? {
@@ -22,10 +22,10 @@ class BlockStorageMetricsHandlerAction(private val manager: OpenStackManager) : 
     }
 
     override fun doCatRequest(
-        rr: RestRequest?,
-        nc: NodeClient?
+        p0: RestRequest?,
+        p1: NodeClient?
     ): RestChannelConsumer? {
-        val metric = rr?.path()?.split("/".toRegex())?.last()
+        val metric = p0?.path()?.split("/".toRegex())?.last()
 
         return RestChannelConsumer { channel ->
             try {
@@ -56,7 +56,6 @@ class BlockStorageMetricsHandlerAction(private val manager: OpenStackManager) : 
             """.trimIndent()
         )
     }
-
 
     override fun getTableWithHeader(rr: RestRequest?): Table? {
         return Table()
