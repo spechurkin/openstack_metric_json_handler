@@ -8,7 +8,9 @@ import java.net.http.HttpResponse
 class IdentityWrapper(
     private val keystoneUrl: String,
     private val username: String,
-    private val password: String
+    private val password: String,
+    private val project: String,
+    private val domain: String
 ) {
     private val httpClient = HttpClient.newBuilder().build()
 
@@ -21,15 +23,15 @@ class IdentityWrapper(
               "password": {
                 "user": {
                   "name": "$username",
-                  "domain": { "name": "default" },
+                  "domain": { "name": "$domain" },
                   "password": "$password"
                 }
               }
             },
             "scope": {
               "project": {
-                "name": "admin",
-                "domain": { "name": "default" }
+                "name": "$project",
+                "domain": { "name": "$domain" }
               }
             }
           }
