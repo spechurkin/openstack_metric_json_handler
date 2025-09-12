@@ -2,7 +2,7 @@ package me.nn2.nn2openstackplugin.support.settings
 
 class GlobalSettings {
     companion object {
-        private const val BASE_PATH: String = "/nn2"
+        private const val BASE_PATH: String = "_nn2/openstack"
 
         const val COMPUTE_PATH: String = "$BASE_PATH/compute"
         const val IDENTITY_PATH: String = "$BASE_PATH/identity"
