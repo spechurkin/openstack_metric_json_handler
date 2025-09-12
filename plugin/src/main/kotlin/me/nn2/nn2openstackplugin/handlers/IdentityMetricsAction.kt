@@ -29,8 +29,8 @@ class IdentityMetricsAction(private val wrapper: OpenStackWrapper) : BaseRestHan
         val metric = p0?.path()?.split("/".toRegex())?.last()
         val processor = IdentityProcessor()
 
-        try {
-            return RestChannelConsumer {
+        return try {
+            RestChannelConsumer {
                 try {
                     processor.process(metric!!, wrapper, it)
                 } catch (e: Exception) {
@@ -39,7 +39,7 @@ class IdentityMetricsAction(private val wrapper: OpenStackWrapper) : BaseRestHan
             }
         } catch (e: IllegalStateException) {
             log.error(e.message)
-            return RestChannelConsumer { channel -> MessageHelper.sendExceptionMessage(channel, e) }
+            RestChannelConsumer { channel -> MessageHelper.sendExceptionMessage(channel, e) }
         }
     }
 

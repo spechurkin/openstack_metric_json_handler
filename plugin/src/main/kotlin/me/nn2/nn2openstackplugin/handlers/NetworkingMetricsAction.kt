@@ -32,8 +32,8 @@ class NetworkingMetricsAction(private val wrapper: OpenStackWrapper) : BaseRestH
         val metric = p0?.path()?.split("/".toRegex())?.last()
         val processor = NetworkProcessor()
 
-        try {
-            return RestChannelConsumer {
+        return try {
+            RestChannelConsumer {
                 try {
                     processor.process(metric!!, wrapper, it)
                 } catch (e: Exception) {
@@ -42,7 +42,7 @@ class NetworkingMetricsAction(private val wrapper: OpenStackWrapper) : BaseRestH
             }
         } catch (e: IllegalStateException) {
             log.error(e.message)
-            return RestChannelConsumer { channel -> MessageHelper.sendExceptionMessage(channel, e) }
+            RestChannelConsumer { channel -> MessageHelper.sendExceptionMessage(channel, e) }
         }
     }
 

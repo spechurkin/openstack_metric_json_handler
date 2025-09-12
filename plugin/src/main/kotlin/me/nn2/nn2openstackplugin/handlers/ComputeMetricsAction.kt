@@ -39,8 +39,8 @@ class ComputeMetricsAction(private val wrapper: OpenStackWrapper) :
         val metric = p0?.path()?.split("/".toRegex())?.last()
         val processor = ComputeProcessor()
 
-        try {
-            return RestChannelConsumer {
+        return try {
+            RestChannelConsumer {
                 try {
                     processor.process(metric!!, wrapper, it)
                 } catch (e: Exception) {
@@ -49,7 +49,7 @@ class ComputeMetricsAction(private val wrapper: OpenStackWrapper) :
             }
         } catch (e: IllegalStateException) {
             log.error(e.message)
-            return RestChannelConsumer { channel -> MessageHelper.sendExceptionMessage(channel, e) }
+            RestChannelConsumer { channel -> MessageHelper.sendExceptionMessage(channel, e) }
         }
     }
 
