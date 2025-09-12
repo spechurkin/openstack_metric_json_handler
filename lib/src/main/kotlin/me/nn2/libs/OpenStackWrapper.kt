@@ -17,7 +17,7 @@ class OpenStackWrapper(
     private val project: String,
     private val allowInsecure: Boolean // TODO: Найти выход с прямым отключением сертификации
 ) {
-    fun client(): OSClient.OSClientV3 {
+    private fun client(): OSClient.OSClientV3 {
         val config =
             if (allowInsecure) {
                 Config.newConfig().withSSLVerificationDisabled()
