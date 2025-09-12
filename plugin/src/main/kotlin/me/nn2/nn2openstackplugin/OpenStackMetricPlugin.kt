@@ -4,6 +4,7 @@ import me.nn2.nn2openstackplugin.handlers.BlockStorageMetricsAction
 import me.nn2.nn2openstackplugin.handlers.ComputeMetricsAction
 import me.nn2.nn2openstackplugin.handlers.IdentityMetricsAction
 import me.nn2.nn2openstackplugin.handlers.NetworkingMetricsAction
+import me.nn2.nn2openstackplugin.support.OpenStackManager
 import me.nn2.nn2openstackplugin.support.settings.CustomNN2OpenStackSettings
 import me.nn2.nn2openstackplugin.support.settings.GlobalSettings
 import me.nn2.nn2openstackplugin.support.settings.SettingsLoader
@@ -36,11 +37,20 @@ class OpenStackMetricPlugin(private val settings: Settings, private val configPa
         val loader = SettingsLoader()
         loader.initSettingFields(loader.loadSettingsFromFile(Environment(settings, configPath)), globalSettings)
 
+        val wrapper = OpenStackManager().wrapper(
+            authUrl = globalSettings.authUrl,
+            username = globalSettings.openstackUser,
+            password = globalSettings.openstackPassword,
+            domain = globalSettings.domain,
+            project = globalSettings.project,
+            allowInsecure = globalSettings.allowInsecure
+        )
+
         return listOf(
-            ComputeMetricsAction(globalSettings),
-            BlockStorageMetricsAction(globalSettings),
-            NetworkingMetricsAction(globalSettings),
-            IdentityMetricsAction(globalSettings)
+            ComputeMetricsAction(wrapper),
+            BlockStorageMetricsAction(wrapper),
+            NetworkingMetricsAction(wrapper),
+            IdentityMetricsAction(wrapper)
         )
     }
 

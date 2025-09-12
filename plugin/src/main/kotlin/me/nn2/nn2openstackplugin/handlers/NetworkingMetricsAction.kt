@@ -1,15 +1,18 @@
 package me.nn2.nn2openstackplugin.handlers
 
+import me.nn2.libs.OpenStackWrapper
+import me.nn2.nn2openstackplugin.processors.NetworkProcessor
 import me.nn2.nn2openstackplugin.support.MessageHelper
-import me.nn2.nn2openstackplugin.support.OpenStackManager
 import me.nn2.nn2openstackplugin.support.settings.GlobalSettings
 import org.opensearch.client.node.NodeClient
 import org.opensearch.rest.BaseRestHandler
-import org.opensearch.rest.RestChannel
 import org.opensearch.rest.RestHandler
 import org.opensearch.rest.RestRequest
+import org.slf4j.LoggerFactory
 
-class NetworkingMetricsAction(private val globalSettings: GlobalSettings) : BaseRestHandler() {
+class NetworkingMetricsAction(private val wrapper: OpenStackWrapper) : BaseRestHandler() {
+    private val log = LoggerFactory.getLogger(ComputeMetricsAction::class.java)
+
     override fun routes(): List<RestHandler.Route?>? {
         return listOf(
             RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.NETWORKING_PATH}/network"),
@@ -26,32 +29,20 @@ class NetworkingMetricsAction(private val globalSettings: GlobalSettings) : Base
         p0: RestRequest?,
         p1: NodeClient?
     ): RestChannelConsumer? {
-        val wrapper = OpenStackManager().wrapper(
-            authUrl = globalSettings.authUrl,
-            username = globalSettings.openstackUser,
-            password = globalSettings.openstackPassword,
-            domain = globalSettings.domain,
-            project = globalSettings.project,
-            allowInsecure = globalSettings.allowInsecure
-        ).networking()
         val metric = p0?.path()?.split("/".toRegex())?.last()
+        val processor = NetworkProcessor()
 
-        return RestChannelConsumer { channel: RestChannel ->
-            try {
-                var dto: Set<Any> = setOf()
-                when (metric) {
-                    "network" -> dto = wrapper.getNetworks().toSet()
-                    "subnet" -> dto = wrapper.getSubnets().toSet()
-                    "port" -> dto = wrapper.getPorts().toSet()
-                    "router" -> dto = wrapper.getRouters().toSet()
-                    "securitygroup" -> dto = wrapper.getSecurityGroups().toSet()
-                    "quotas" -> dto = wrapper.getQuotas().toSet()
-                    "floatingip" -> dto = wrapper.getFloatingIps().toSet()
+        try {
+            return RestChannelConsumer {
+                try {
+                    processor.process(metric!!, wrapper, it)
+                } catch (e: Exception) {
+                    MessageHelper.sendExceptionMessage(it, e)
                 }
-                MessageHelper.sendResponse(channel, dto)
-            } catch (e: Exception) {
-                MessageHelper.sendExceptionMessage(channel, e)
             }
+        } catch (e: IllegalStateException) {
+            log.error(e.message)
+            return RestChannelConsumer { channel -> MessageHelper.sendExceptionMessage(channel, e) }
         }
     }
 

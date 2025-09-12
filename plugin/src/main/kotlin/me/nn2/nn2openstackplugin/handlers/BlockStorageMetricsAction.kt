@@ -1,14 +1,18 @@
 package me.nn2.nn2openstackplugin.handlers
 
+import me.nn2.libs.OpenStackWrapper
+import me.nn2.nn2openstackplugin.processors.StorageProcessor
 import me.nn2.nn2openstackplugin.support.MessageHelper
-import me.nn2.nn2openstackplugin.support.OpenStackManager
 import me.nn2.nn2openstackplugin.support.settings.GlobalSettings
 import org.opensearch.client.node.NodeClient
 import org.opensearch.rest.BaseRestHandler
 import org.opensearch.rest.RestHandler
 import org.opensearch.rest.RestRequest
+import org.slf4j.LoggerFactory
 
-class BlockStorageMetricsAction(private val globalSettings: GlobalSettings) : BaseRestHandler() {
+class BlockStorageMetricsAction(private val wrapper: OpenStackWrapper) : BaseRestHandler() {
+    private val log = LoggerFactory.getLogger(ComputeMetricsAction::class.java)
+
     override fun routes(): List<RestHandler.Route?>? {
         return listOf(
             RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.STORAGE_PATH}/volumes"),
@@ -22,29 +26,20 @@ class BlockStorageMetricsAction(private val globalSettings: GlobalSettings) : Ba
         p0: RestRequest?,
         p1: NodeClient?
     ): RestChannelConsumer? {
-        val wrapper = OpenStackManager().wrapper(
-            authUrl = globalSettings.authUrl,
-            username = globalSettings.openstackUser,
-            password = globalSettings.openstackPassword,
-            domain = globalSettings.domain,
-            project = globalSettings.project,
-            allowInsecure = globalSettings.allowInsecure
-        ).blockStorage()
         val metric = p0?.path()?.split("/".toRegex())?.last()
+        val processor = StorageProcessor()
 
-        return RestChannelConsumer { channel ->
-            try {
-                var dto: Set<Any> = setOf()
-                when (metric) {
-                    "volumes" -> dto = wrapper.getVolumes().toSet()
-                    "backups" -> dto = wrapper.getBackups().toSet()
-                    "snapshots" -> dto = wrapper.getSnapshots().toSet()
-                    "services" -> dto = wrapper.getServices().toSet()
+        try {
+            return RestChannelConsumer {
+                try {
+                    processor.process(metric!!, wrapper, it)
+                } catch (e: Exception) {
+                    MessageHelper.sendExceptionMessage(it, e)
                 }
-                MessageHelper.sendResponse(channel, dto)
-            } catch (e: Exception) {
-                MessageHelper.sendExceptionMessage(channel, e)
             }
+        } catch (e: IllegalStateException) {
+            log.error(e.message)
+            return RestChannelConsumer { channel -> MessageHelper.sendExceptionMessage(channel, e) }
         }
     }
 

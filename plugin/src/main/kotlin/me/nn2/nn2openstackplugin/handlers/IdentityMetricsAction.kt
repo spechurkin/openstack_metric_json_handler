@@ -1,14 +1,18 @@
 package me.nn2.nn2openstackplugin.handlers
 
+import me.nn2.libs.OpenStackWrapper
+import me.nn2.nn2openstackplugin.processors.IdentityProcessor
 import me.nn2.nn2openstackplugin.support.MessageHelper
-import me.nn2.nn2openstackplugin.support.OpenStackManager
 import me.nn2.nn2openstackplugin.support.settings.GlobalSettings
 import org.opensearch.client.node.NodeClient
 import org.opensearch.rest.BaseRestHandler
 import org.opensearch.rest.RestHandler
 import org.opensearch.rest.RestRequest
+import org.slf4j.LoggerFactory
 
-class IdentityMetricsAction(private val globalSettings: GlobalSettings) : BaseRestHandler() {
+class IdentityMetricsAction(private val wrapper: OpenStackWrapper) : BaseRestHandler() {
+    private val log = LoggerFactory.getLogger(ComputeMetricsAction::class.java)
+
     override fun routes(): List<RestHandler.Route?>? {
         return listOf(
             RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.IDENTITY_PATH}/volumes"),
@@ -22,29 +26,20 @@ class IdentityMetricsAction(private val globalSettings: GlobalSettings) : BaseRe
         p0: RestRequest?,
         p1: NodeClient?
     ): RestChannelConsumer? {
-        val wrapper = OpenStackManager().wrapper(
-            authUrl = globalSettings.authUrl,
-            username = globalSettings.openstackUser,
-            password = globalSettings.openstackPassword,
-            domain = globalSettings.domain,
-            project = globalSettings.project,
-            allowInsecure = globalSettings.allowInsecure
-        ).identity()
         val metric = p0?.path()?.split("/".toRegex())?.last()
+        val processor = IdentityProcessor()
 
-        return RestChannelConsumer { channel ->
-            try {
-                var dto = ""
-                when (metric) {
-                    "volumes" -> dto = wrapper.getUsers()
-                    "backups" -> dto = wrapper.getGroups()
-                    "snapshots" -> dto = wrapper.getProjects()
-                    "domains" -> dto = wrapper.getDomains()
+        try {
+            return RestChannelConsumer {
+                try {
+                    processor.process(metric!!, wrapper, it)
+                } catch (e: Exception) {
+                    MessageHelper.sendExceptionMessage(it, e)
                 }
-                MessageHelper.sendMessage(channel, dto)
-            } catch (e: Exception) {
-                MessageHelper.sendExceptionMessage(channel, e)
             }
+        } catch (e: IllegalStateException) {
+            log.error(e.message)
+            return RestChannelConsumer { channel -> MessageHelper.sendExceptionMessage(channel, e) }
         }
     }
 
