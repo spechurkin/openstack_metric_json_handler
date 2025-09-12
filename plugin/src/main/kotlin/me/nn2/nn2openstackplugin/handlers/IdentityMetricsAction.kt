@@ -2,32 +2,38 @@ package me.nn2.nn2openstackplugin.handlers
 
 import me.nn2.nn2openstackplugin.support.MessageHelper
 import me.nn2.nn2openstackplugin.support.OpenStackManager
-import me.nn2.nn2openstackplugin.support.settings.GlobalSettings.Companion.IDENTITY_PATH
+import me.nn2.nn2openstackplugin.support.settings.GlobalSettings
 import org.opensearch.client.node.NodeClient
-import org.opensearch.common.Table
+import org.opensearch.rest.BaseRestHandler
 import org.opensearch.rest.RestHandler
 import org.opensearch.rest.RestRequest
-import org.opensearch.rest.action.cat.AbstractCatAction
 
-class IdentityMetricsAction(private val manager: OpenStackManager) : AbstractCatAction() {
+class IdentityMetricsAction(private val globalSettings: GlobalSettings) : BaseRestHandler() {
     override fun routes(): List<RestHandler.Route?>? {
         return listOf(
-            RestHandler.Route(RestRequest.Method.GET, "${IDENTITY_PATH}/volumes"),
-            RestHandler.Route(RestRequest.Method.GET, "${IDENTITY_PATH}/backups"),
-            RestHandler.Route(RestRequest.Method.GET, "${IDENTITY_PATH}/snapshots"),
-            RestHandler.Route(RestRequest.Method.GET, "${IDENTITY_PATH}/domains")
+            RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.IDENTITY_PATH}/volumes"),
+            RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.IDENTITY_PATH}/backups"),
+            RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.IDENTITY_PATH}/snapshots"),
+            RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.IDENTITY_PATH}/domains")
         )
     }
 
-    override fun doCatRequest(
+    override fun prepareRequest(
         p0: RestRequest?,
         p1: NodeClient?
     ): RestChannelConsumer? {
+        val wrapper = OpenStackManager().wrapper(
+            authUrl = globalSettings.authUrl,
+            username = globalSettings.openstackUser,
+            password = globalSettings.openstackPassword,
+            domain = globalSettings.domain,
+            project = globalSettings.project,
+            allowInsecure = globalSettings.allowInsecure
+        ).identity()
         val metric = p0?.path()?.split("/".toRegex())?.last()
 
         return RestChannelConsumer { channel ->
             try {
-                val wrapper = manager.wrapper().identity()
                 var dto = ""
                 when (metric) {
                     "volumes" -> dto = wrapper.getUsers()
@@ -40,21 +46,6 @@ class IdentityMetricsAction(private val manager: OpenStackManager) : AbstractCat
                 MessageHelper.sendExceptionMessage(channel, e)
             }
         }
-    }
-
-    override fun documentation(sb: StringBuilder) {
-        sb.append(
-            """
-                ${IDENTITY_PATH}/volumes
-                ${IDENTITY_PATH}/backups
-                ${IDENTITY_PATH}/snapshots
-                ${IDENTITY_PATH}/domains
-            """.trimIndent()
-        )
-    }
-
-    override fun getTableWithHeader(rr: RestRequest?): Table? {
-        return Table()
     }
 
     override fun getName(): String? = "identity_metric_handler"

@@ -8,6 +8,12 @@ class GlobalSettings {
         const val IDENTITY_PATH: String = "$BASE_PATH/identity"
         const val NETWORKING_PATH: String = "$BASE_PATH/networking"
         const val STORAGE_PATH: String = "$BASE_PATH/blockStorage"
-        const val CONFIG_PATH: String = "$BASE_PATH/openstack/config"
     }
+
+    var authUrl: String = ""
+    var openstackUser: String = ""
+    var openstackPassword: String = ""
+    var domain: String = "Default"
+    var project: String = "admin"
+    var allowInsecure: Boolean = true
 }

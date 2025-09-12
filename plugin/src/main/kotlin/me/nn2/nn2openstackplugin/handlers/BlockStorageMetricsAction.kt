@@ -1,33 +1,39 @@
 package me.nn2.nn2openstackplugin.handlers
 
 import me.nn2.nn2openstackplugin.support.MessageHelper
-import me.nn2.nn2openstackplugin.support.settings.GlobalSettings.Companion.STORAGE_PATH
 import me.nn2.nn2openstackplugin.support.OpenStackManager
+import me.nn2.nn2openstackplugin.support.settings.GlobalSettings
 import org.opensearch.client.node.NodeClient
-import org.opensearch.common.Table
+import org.opensearch.rest.BaseRestHandler
 import org.opensearch.rest.RestHandler
 import org.opensearch.rest.RestRequest
-import org.opensearch.rest.action.cat.AbstractCatAction
 
-class BlockStorageMetricsAction(private val manager: OpenStackManager) : AbstractCatAction() {
+class BlockStorageMetricsAction(private val globalSettings: GlobalSettings) : BaseRestHandler() {
     override fun routes(): List<RestHandler.Route?>? {
         return listOf(
-            RestHandler.Route(RestRequest.Method.GET, "${STORAGE_PATH}/volumes"),
-            RestHandler.Route(RestRequest.Method.GET, "${STORAGE_PATH}/backups"),
-            RestHandler.Route(RestRequest.Method.GET, "${STORAGE_PATH}/snapshots"),
-            RestHandler.Route(RestRequest.Method.GET, "${STORAGE_PATH}/services")
+            RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.STORAGE_PATH}/volumes"),
+            RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.STORAGE_PATH}/backups"),
+            RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.STORAGE_PATH}/snapshots"),
+            RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.STORAGE_PATH}/services")
         )
     }
 
-    override fun doCatRequest(
+    override fun prepareRequest(
         p0: RestRequest?,
         p1: NodeClient?
     ): RestChannelConsumer? {
+        val wrapper = OpenStackManager().wrapper(
+            authUrl = globalSettings.authUrl,
+            username = globalSettings.openstackUser,
+            password = globalSettings.openstackPassword,
+            domain = globalSettings.domain,
+            project = globalSettings.project,
+            allowInsecure = globalSettings.allowInsecure
+        ).blockStorage()
         val metric = p0?.path()?.split("/".toRegex())?.last()
 
         return RestChannelConsumer { channel ->
             try {
-                val wrapper = manager.wrapper().blockStorage()
                 var dto: Set<Any> = setOf()
                 when (metric) {
                     "volumes" -> dto = wrapper.getVolumes().toSet()
@@ -40,21 +46,6 @@ class BlockStorageMetricsAction(private val manager: OpenStackManager) : Abstrac
                 MessageHelper.sendExceptionMessage(channel, e)
             }
         }
-    }
-
-    override fun documentation(sb: StringBuilder) {
-        sb.append(
-            """
-                ${STORAGE_PATH}/volumes
-                ${STORAGE_PATH}/backups
-                ${STORAGE_PATH}/snapshots
-                ${STORAGE_PATH}/services
-            """.trimIndent()
-        )
-    }
-
-    override fun getTableWithHeader(rr: RestRequest?): Table? {
-        return Table()
     }
 
     override fun getName(): String? = "storage_metric_handler"

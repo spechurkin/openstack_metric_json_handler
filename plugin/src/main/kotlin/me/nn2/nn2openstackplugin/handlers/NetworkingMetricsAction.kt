@@ -1,37 +1,43 @@
 package me.nn2.nn2openstackplugin.handlers
 
 import me.nn2.nn2openstackplugin.support.MessageHelper
-import me.nn2.nn2openstackplugin.support.settings.GlobalSettings.Companion.NETWORKING_PATH
 import me.nn2.nn2openstackplugin.support.OpenStackManager
+import me.nn2.nn2openstackplugin.support.settings.GlobalSettings
 import org.opensearch.client.node.NodeClient
-import org.opensearch.common.Table
+import org.opensearch.rest.BaseRestHandler
 import org.opensearch.rest.RestChannel
 import org.opensearch.rest.RestHandler
 import org.opensearch.rest.RestRequest
-import org.opensearch.rest.action.cat.AbstractCatAction
 
-class NetworkingMetricsAction(private val manager: OpenStackManager) : AbstractCatAction() {
+class NetworkingMetricsAction(private val globalSettings: GlobalSettings) : BaseRestHandler() {
     override fun routes(): List<RestHandler.Route?>? {
         return listOf(
-            RestHandler.Route(RestRequest.Method.GET, "${NETWORKING_PATH}/network"),
-            RestHandler.Route(RestRequest.Method.GET, "${NETWORKING_PATH}/subnet"),
-            RestHandler.Route(RestRequest.Method.GET, "${NETWORKING_PATH}/port"),
-            RestHandler.Route(RestRequest.Method.GET, "${NETWORKING_PATH}/router"),
-            RestHandler.Route(RestRequest.Method.GET, "${NETWORKING_PATH}/securitygroup"),
-            RestHandler.Route(RestRequest.Method.GET, "${NETWORKING_PATH}/quotas"),
-            RestHandler.Route(RestRequest.Method.GET, "${NETWORKING_PATH}/floatingip")
+            RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.NETWORKING_PATH}/network"),
+            RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.NETWORKING_PATH}/subnet"),
+            RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.NETWORKING_PATH}/port"),
+            RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.NETWORKING_PATH}/router"),
+            RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.NETWORKING_PATH}/securitygroup"),
+            RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.NETWORKING_PATH}/quotas"),
+            RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.NETWORKING_PATH}/floatingip")
         )
     }
 
-    override fun doCatRequest(
+    override fun prepareRequest(
         p0: RestRequest?,
         p1: NodeClient?
     ): RestChannelConsumer? {
+        val wrapper = OpenStackManager().wrapper(
+            authUrl = globalSettings.authUrl,
+            username = globalSettings.openstackUser,
+            password = globalSettings.openstackPassword,
+            domain = globalSettings.domain,
+            project = globalSettings.project,
+            allowInsecure = globalSettings.allowInsecure
+        ).networking()
         val metric = p0?.path()?.split("/".toRegex())?.last()
 
         return RestChannelConsumer { channel: RestChannel ->
             try {
-                val wrapper = manager.wrapper().networking()
                 var dto: Set<Any> = setOf()
                 when (metric) {
                     "network" -> dto = wrapper.getNetworks().toSet()
@@ -47,24 +53,6 @@ class NetworkingMetricsAction(private val manager: OpenStackManager) : AbstractC
                 MessageHelper.sendExceptionMessage(channel, e)
             }
         }
-    }
-
-    override fun documentation(sb: StringBuilder) {
-        sb.append(
-            """
-                ${NETWORKING_PATH}/network
-                ${NETWORKING_PATH}/subnet
-                ${NETWORKING_PATH}/port
-                ${NETWORKING_PATH}/router
-                ${NETWORKING_PATH}/securitygroup
-                ${NETWORKING_PATH}/quotas
-                ${NETWORKING_PATH}/floatingip
-            """.trimIndent()
-        )
-    }
-
-    override fun getTableWithHeader(rr: RestRequest?): Table? {
-        return Table()
     }
 
     override fun getName(): String? = "network_metric_handler"
