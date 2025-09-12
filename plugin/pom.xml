@@ -235,7 +235,7 @@
         <dependency>
             <groupId>me.nn2.libs</groupId>
             <artifactId>openstack-lib</artifactId>
-            <version>0.0.1</version>
+            <version>${nn2.openstack.build.version}</version>
             <scope>compile</scope>
             <exclusions>
                 <exclusion>
