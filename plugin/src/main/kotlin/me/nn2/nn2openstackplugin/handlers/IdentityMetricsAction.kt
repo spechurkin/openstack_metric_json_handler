@@ -1,8 +1,8 @@
 package me.nn2.nn2openstackplugin.handlers
 
 import me.nn2.nn2openstackplugin.support.MessageHelper
-import me.nn2.nn2openstackplugin.support.settings.GlobalSettings.Companion.IDENTITY_PATH
 import me.nn2.nn2openstackplugin.support.OpenStackManager
+import me.nn2.nn2openstackplugin.support.settings.GlobalSettings.Companion.IDENTITY_PATH
 import org.opensearch.client.node.NodeClient
 import org.opensearch.common.Table
 import org.opensearch.rest.RestHandler
@@ -28,14 +28,14 @@ class IdentityMetricsAction(private val manager: OpenStackManager) : AbstractCat
         return RestChannelConsumer { channel ->
             try {
                 val wrapper = manager.wrapper().identity()
-                var dto: Any = ""
+                var dto = ""
                 when (metric) {
                     "volumes" -> dto = wrapper.getUsers()
                     "backups" -> dto = wrapper.getGroups()
                     "snapshots" -> dto = wrapper.getProjects()
                     "domains" -> dto = wrapper.getDomains()
                 }
-                MessageHelper.sendMessage(channel, dto.toString())
+                MessageHelper.sendMessage(channel, dto)
             } catch (e: Exception) {
                 MessageHelper.sendExceptionMessage(channel, e)
             }
