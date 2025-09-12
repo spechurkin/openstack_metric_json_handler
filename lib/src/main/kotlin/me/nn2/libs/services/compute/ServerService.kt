@@ -1,19 +1,18 @@
-package services.compute
+package me.nn2.libs.services.compute
 
+import me.nn2.libs.data.compute.ServerData
+import me.nn2.libs.services.IMetricService
 import org.openstack4j.api.OSClient.OSClientV3
-import org.openstack4j.model.compute.Server.Status
-import services.IMetricService
-import java.util.*
 
 class ServerService(override val client: OSClientV3) : IMetricService {
-    fun getServers(): List<ServerDTO> {
+    fun getServers(): List<ServerData> {
         return convertToDto()
     }
 
-    private fun convertToDto(): List<ServerDTO> {
-        val serverDto =
+    private fun convertToDto(): List<ServerData> {
+        val serverData =
             client.compute().servers().list().map { server ->
-                ServerDTO(
+                ServerData(
                     id = server.id,
                     name = server.name,
                     status = server.status,
@@ -22,15 +21,6 @@ class ServerService(override val client: OSClientV3) : IMetricService {
                     updated = server.updated,
                 )
             }
-        return serverDto
+        return serverData
     }
-
-    data class ServerDTO(
-        var id: String?,
-        var name: String?,
-        var status: Status?,
-        var flavor: FlavorService.FlavorDTO?,
-        var created: Date?,
-        var updated: Date?,
-    )
 }

@@ -6,7 +6,7 @@
     </formats>
     <includeBaseDirectory>false</includeBaseDirectory>
 
-     <files>
+    <files>
         <file>
             <source>${project.basedir}/src/main/resources/plugin-descriptor.properties</source>
             <filtered>true</filtered>

@@ -1,6 +1,6 @@
 package proj.work
 
-import services.wrappers.OpenStackWrapper
+import me.nn2.libs.OpenStackWrapper
 
 const val identityUrl = "https://10.0.2.15:5000/v3/"
 const val login = "admin"
@@ -9,7 +9,7 @@ const val domain = "default"
 const val project = "admin"
 
 fun main() {
-    val wrapper = OpenStackWrapper(identityUrl, login, password, domain, project)
+    val wrapper = OpenStackWrapper(identityUrl, login, password, domain, project, true)
 
     println(wrapper.compute().getServers())
     println(wrapper.compute().getImages())

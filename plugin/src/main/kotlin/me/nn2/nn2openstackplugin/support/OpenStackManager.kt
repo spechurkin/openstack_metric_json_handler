@@ -1,6 +1,7 @@
-package me.nn2.nn2openstackplugin.config
+package me.nn2.nn2openstackplugin.support
 
-import services.wrappers.OpenStackWrapper
+import me.nn2.libs.OpenStackWrapper
+import me.nn2.nn2openstackplugin.support.settings.OpenStackConfig
 import java.util.concurrent.atomic.AtomicReference
 
 class OpenStackManager() {
@@ -9,13 +10,14 @@ class OpenStackManager() {
 
     fun setConfig(cfg: OpenStackConfig) {
         cfgRef.set(cfg)
-        // Создаём новый wrapper (при необходимости — с флагом allowInsecure в своём конструкторе)
+
         wrapperRef = OpenStackWrapper(
             authUrl = cfg.authUrl,
             username = cfg.username,
             password = cfg.password,
             domain = cfg.domain,
-            project = cfg.project
+            project = cfg.project,
+            allowInsecure = cfg.allowInsecure
         )
     }
 

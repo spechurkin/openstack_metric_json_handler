@@ -1,24 +1,25 @@
-package services.compute
+package me.nn2.libs.services.compute
 
+import me.nn2.libs.data.compute.FlavorData
+import me.nn2.libs.services.IMetricService
 import org.openstack4j.api.OSClient.OSClientV3
 import org.openstack4j.model.compute.Flavor
-import services.IMetricService
 
 class FlavorService(override val client: OSClientV3) : IMetricService {
-    fun getFlavors(): List<FlavorDTO> {
+    fun getFlavors(): List<FlavorData> {
         return convertToDto()
     }
 
-    private fun convertToDto(): List<FlavorDTO> {
-        val flavorDto =
+    private fun convertToDto(): List<FlavorData> {
+        val flavorData =
             client.compute().flavors().list().map { flavor ->
                 convertToDto(flavor)
             }
-        return flavorDto
+        return flavorData
     }
 
-    fun convertToDto(flavor: Flavor?): FlavorDTO {
-        return FlavorDTO(
+    fun convertToDto(flavor: Flavor?): FlavorData {
+        return FlavorData(
             id = flavor?.id,
             name = flavor?.name,
             ram = flavor?.ram,
@@ -28,14 +29,4 @@ class FlavorService(override val client: OSClientV3) : IMetricService {
             swap = flavor?.swap,
         )
     }
-
-    data class FlavorDTO(
-        var id: String?,
-        var name: String?,
-        var ram: Int?,
-        var vcpu: Int?,
-        var disk: Int?,
-        var ephemeral: Int?,
-        var swap: Int?,
-    )
 }

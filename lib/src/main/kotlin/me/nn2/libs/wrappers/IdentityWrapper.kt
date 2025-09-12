@@ -1,4 +1,4 @@
-package services.wrappers
+package me.nn2.libs.wrappers
 
 import java.net.URI
 import java.net.http.HttpClient

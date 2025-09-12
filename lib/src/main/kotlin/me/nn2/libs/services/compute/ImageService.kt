@@ -1,19 +1,18 @@
-package services.compute
+package me.nn2.libs.services.compute
 
+import me.nn2.libs.data.compute.ImageData
+import me.nn2.libs.services.IMetricService
 import org.openstack4j.api.OSClient.OSClientV3
-import org.openstack4j.model.compute.Image.Status
-import services.IMetricService
-import java.util.*
 
 class ImageService(override val client: OSClientV3) : IMetricService {
-    fun getImages(): List<ImageDTO> {
+    fun getImages(): List<ImageData> {
         return convertToDto()
     }
 
-    private fun convertToDto(): List<ImageDTO> {
-        val imageDto =
+    private fun convertToDto(): List<ImageData> {
+        val imageData =
             client.compute().images().list().map { image ->
-                ImageDTO(
+                ImageData(
                     id = image.id,
                     name = image.name,
                     minRam = image.minRam,
@@ -24,17 +23,6 @@ class ImageService(override val client: OSClientV3) : IMetricService {
                     updated = image.updated,
                 )
             }
-        return imageDto
+        return imageData
     }
-
-    data class ImageDTO(
-        var id: String?,
-        var name: String?,
-        var minRam: Int?,
-        var minDisk: Int?,
-        var size: Long?,
-        var status: Status?,
-        var created: Date?,
-        var updated: Date?,
-    )
 }

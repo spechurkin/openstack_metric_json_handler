@@ -3,7 +3,7 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    
+
     <groupId>me.nn2</groupId>
     <artifactId>nn2openstackplugin</artifactId>
     <version>1.0.0</version>
@@ -15,10 +15,12 @@
         <kotlin.code.style>official</kotlin.code.style>
         <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
 
-        <nn2.openstack.build.version>1.0.0</nn2.openstack.build.version>
+        <nn2.openstack.build.version>0.0.1</nn2.openstack.build.version>
         <revision>${nn2.openstack.build.version}-os${opensearch.version}</revision>
-        <opensearch.nn2.openstack.plugin.version>${nn2.openstack.build.version}_os${opensearch.version}</opensearch.nn2.openstack.plugin.version>
-        <opensearch.nn2.openstack.plugin.description>OpenStack Monitor plugin by NN2 (https://nn2.me)</opensearch.nn2.openstack.plugin.description>
+        <opensearch.nn2.openstack.plugin.version>${nn2.openstack.build.version}_os${opensearch.version}
+        </opensearch.nn2.openstack.plugin.version>
+        <opensearch.nn2.openstack.plugin.description>OpenStack Monitor plugin by NN2 (https://nn2.me)
+        </opensearch.nn2.openstack.plugin.description>
 
         <opensearch.version>2.18.0</opensearch.version>
         <kotlin.version>1.9.24</kotlin.version>
@@ -45,7 +47,7 @@
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-maven-plugin</artifactId>
-                <version>1.9.23</version>
+                <version>${kotlin.version}</version>
                 <executions>
                     <execution>
                         <id>compile</id>

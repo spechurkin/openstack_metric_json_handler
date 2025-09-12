@@ -1,17 +1,17 @@
 package me.nn2.nn2openstackplugin
 
-import me.nn2.nn2openstackplugin.action.BlockStorageMetricsHandlerAction
-import me.nn2.nn2openstackplugin.action.ComputeMetricsHandlerAction
-import me.nn2.nn2openstackplugin.action.ConfigHandlerAction
-import me.nn2.nn2openstackplugin.action.IdentityMetricsHandlerAction
-import me.nn2.nn2openstackplugin.action.NetworkingMetricsHandlerAction
+import me.nn2.nn2openstackplugin.handlers.BlockStorageMetricsAction
+import me.nn2.nn2openstackplugin.handlers.ComputeMetricsAction
+import me.nn2.nn2openstackplugin.handlers.ConfigAction
+import me.nn2.nn2openstackplugin.handlers.IdentityMetricsAction
+import me.nn2.nn2openstackplugin.handlers.NetworkingMetricsAction
 import org.opensearch.cluster.metadata.IndexNameExpressionResolver
 import org.opensearch.cluster.node.DiscoveryNodes
 import org.opensearch.common.settings.ClusterSettings
 import org.opensearch.common.settings.IndexScopedSettings
 import org.opensearch.common.settings.Settings
 import org.opensearch.common.settings.SettingsFilter
-import me.nn2.nn2openstackplugin.config.OpenStackManager
+import me.nn2.nn2openstackplugin.support.OpenStackManager
 import org.opensearch.plugins.ActionPlugin
 import org.opensearch.plugins.Plugin
 import org.opensearch.rest.RestController
@@ -31,11 +31,11 @@ class OpenStackMetricPlugin : Plugin(), ActionPlugin {
         nodesInCluster: Supplier<DiscoveryNodes?>?
     ): List<RestHandler?>? {
         return listOf(
-            ComputeMetricsHandlerAction(manager),
-            BlockStorageMetricsHandlerAction(manager),
-            NetworkingMetricsHandlerAction(manager),
-            IdentityMetricsHandlerAction(manager),
-            ConfigHandlerAction(manager)
+            ComputeMetricsAction(manager),
+            BlockStorageMetricsAction(manager),
+            NetworkingMetricsAction(manager),
+            IdentityMetricsAction(manager),
+            ConfigAction(manager)
         )
     }
 }

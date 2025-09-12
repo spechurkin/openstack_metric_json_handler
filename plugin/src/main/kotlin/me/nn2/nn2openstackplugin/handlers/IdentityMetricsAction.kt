@@ -1,22 +1,21 @@
-package me.nn2.nn2openstackplugin.action
+package me.nn2.nn2openstackplugin.handlers
 
+import me.nn2.nn2openstackplugin.support.MessageHelper
+import me.nn2.nn2openstackplugin.support.settings.GlobalSettings.Companion.IDENTITY_PATH
+import me.nn2.nn2openstackplugin.support.OpenStackManager
 import org.opensearch.client.node.NodeClient
 import org.opensearch.common.Table
-import org.opensearch.core.rest.RestStatus
-import me.nn2.nn2openstackplugin.config.OpenStackManager
-import me.nn2.nn2openstackplugin.config.err
-import me.nn2.nn2openstackplugin.config.okJson
 import org.opensearch.rest.RestHandler
 import org.opensearch.rest.RestRequest
 import org.opensearch.rest.action.cat.AbstractCatAction
 
-class IdentityMetricsHandlerAction(private val manager: OpenStackManager) : AbstractCatAction() {
+class IdentityMetricsAction(private val manager: OpenStackManager) : AbstractCatAction() {
     override fun routes(): List<RestHandler.Route?>? {
         return listOf(
-            RestHandler.Route(RestRequest.Method.GET, "/nn2/identity/volumes"),
-            RestHandler.Route(RestRequest.Method.GET, "/nn2/identity/backups"),
-            RestHandler.Route(RestRequest.Method.GET, "/nn2/identity/snapshots"),
-            RestHandler.Route(RestRequest.Method.GET, "/nn2/identity/domains")
+            RestHandler.Route(RestRequest.Method.GET, "${IDENTITY_PATH}/volumes"),
+            RestHandler.Route(RestRequest.Method.GET, "${IDENTITY_PATH}/backups"),
+            RestHandler.Route(RestRequest.Method.GET, "${IDENTITY_PATH}/snapshots"),
+            RestHandler.Route(RestRequest.Method.GET, "${IDENTITY_PATH}/domains")
         )
     }
 
@@ -36,11 +35,9 @@ class IdentityMetricsHandlerAction(private val manager: OpenStackManager) : Abst
                     "snapshots" -> dto = wrapper.getProjects()
                     "domains" -> dto = wrapper.getDomains()
                 }
-                channel.sendResponse(
-                    okJson(dto.toString())
-                )
+                MessageHelper.sendMessage(channel, dto.toString())
             } catch (e: Exception) {
-                channel.sendResponse(err(RestStatus.BAD_GATEWAY, "identity.${metric}: ${e.message}"))
+                MessageHelper.sendExceptionMessage(channel, e)
             }
         }
     }
@@ -48,10 +45,10 @@ class IdentityMetricsHandlerAction(private val manager: OpenStackManager) : Abst
     override fun documentation(sb: StringBuilder) {
         sb.append(
             """
-                /nn2/identity/volumes
-                /nn2/identity/backups
-                /nn2/identity/snapshots
-                /nn2/identity/domains
+                ${IDENTITY_PATH}/volumes
+                ${IDENTITY_PATH}/backups
+                ${IDENTITY_PATH}/snapshots
+                ${IDENTITY_PATH}/domains
             """.trimIndent()
         )
     }

@@ -1,34 +1,34 @@
-package services.wrappers
+package me.nn2.libs.wrappers
 
 import org.openstack4j.api.OSClient.OSClientV3
 import org.openstack4j.model.network.*
 
 class NetworkingWrapper(val client: OSClientV3) {
-    fun getNetworks(): List<Network?>? {
+    fun getNetworks(): List<Network> {
         return client.networking().network().list()
     }
 
-    fun getSubnets(): List<Subnet?>? {
+    fun getSubnets(): List<Subnet> {
         return client.networking().subnet().list()
     }
 
-    fun getPorts(): List<Port?>? {
+    fun getPorts(): List<Port> {
         return client.networking().port().list()
     }
 
-    fun getRouters(): List<Router?>? {
+    fun getRouters(): List<Router> {
         return client.networking().router().list()
     }
 
-    fun getSecurityGroups(): List<SecurityGroup?>? {
+    fun getSecurityGroups(): List<SecurityGroup> {
         return client.networking().securitygroup().list()
     }
 
-    fun getQuotas(): List<NetQuota?>? {
+    fun getQuotas(): List<NetQuota> {
         return client.networking().quotas().get()
     }
 
-    fun getFloatingIps(): List<NetFloatingIP?>? {
+    fun getFloatingIps(): List<NetFloatingIP> {
         return client.networking().floatingip().list()
     }
 }
