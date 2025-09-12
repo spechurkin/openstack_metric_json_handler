@@ -4,10 +4,10 @@ class GlobalSettings {
     companion object {
         private const val BASE_PATH: String = "_nn2/openstack"
 
-        const val COMPUTE_PATH: String = "$BASE_PATH/compute"
-        const val IDENTITY_PATH: String = "$BASE_PATH/identity"
-        const val NETWORKING_PATH: String = "$BASE_PATH/networking"
-        const val STORAGE_PATH: String = "$BASE_PATH/blockStorage"
+        const val COMPUTE_PATH: String = "${BASE_PATH}/compute"
+        const val IDENTITY_PATH: String = "${BASE_PATH}/identity"
+        const val NETWORKING_PATH: String = "${BASE_PATH}/networking"
+        const val STORAGE_PATH: String = "${BASE_PATH}/blockStorage"
     }
 
     var authUrl: String = ""
