@@ -15,13 +15,14 @@ class NetworkingMetricsAction(private val wrapper: OpenStackWrapper) : BaseRestH
 
     override fun routes(): List<RestHandler.Route?>? {
         return listOf(
-            RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.NETWORKING_PATH}/network"),
-            RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.NETWORKING_PATH}/subnet"),
-            RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.NETWORKING_PATH}/port"),
-            RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.NETWORKING_PATH}/router"),
-            RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.NETWORKING_PATH}/securitygroup"),
+            RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.NETWORKING_PATH}/networks"),
+            RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.NETWORKING_PATH}/subnets"),
+            RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.NETWORKING_PATH}/ports"),
+            RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.NETWORKING_PATH}/routers"),
+            RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.NETWORKING_PATH}/securitygroups"),
+            RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.NETWORKING_PATH}/securityrules"),
             RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.NETWORKING_PATH}/quotas"),
-            RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.NETWORKING_PATH}/floatingip")
+            RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.NETWORKING_PATH}/floatingips")
         )
     }
 

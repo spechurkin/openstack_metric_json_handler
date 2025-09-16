@@ -19,6 +19,7 @@ class NetworkProcessor() : IProcessor {
                 "ports" -> dto = wrapper.getPorts().toSet()
                 "routers" -> dto = wrapper.getRouters().toSet()
                 "securitygroups" -> dto = wrapper.getSecurityGroups().toSet()
+                "securityrules" -> dto = wrapper.getSecurityGroupRules().toSet()
                 "quotas" -> dto = wrapper.getQuotas().toSet()
                 "floatingips" -> dto = wrapper.getFloatingIps().toSet()
             }
