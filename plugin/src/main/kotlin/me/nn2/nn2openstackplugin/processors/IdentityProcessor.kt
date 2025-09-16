@@ -14,9 +14,9 @@ class IdentityProcessor() : IProcessor {
         try {
             var dto = ""
             when (metric) {
-                "volumes" -> dto = wrapper.getUsers()
-                "backups" -> dto = wrapper.getGroups()
-                "snapshots" -> dto = wrapper.getProjects()
+                "users" -> dto = wrapper.getUsers()
+                "groups" -> dto = wrapper.getGroups()
+                "projects" -> dto = wrapper.getProjects()
                 "domains" -> dto = wrapper.getDomains()
             }
             MessageHelper.sendMessage(channel, dto)

@@ -15,9 +15,9 @@ class IdentityMetricsAction(private val wrapper: OpenStackWrapper) : BaseRestHan
 
     override fun routes(): List<RestHandler.Route?>? {
         return listOf(
-            RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.IDENTITY_PATH}/volumes"),
-            RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.IDENTITY_PATH}/backups"),
-            RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.IDENTITY_PATH}/snapshots"),
+            RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.IDENTITY_PATH}/users"),
+            RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.IDENTITY_PATH}/groups"),
+            RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.IDENTITY_PATH}/projects"),
             RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.IDENTITY_PATH}/domains")
         )
     }
