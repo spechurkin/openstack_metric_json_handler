@@ -4,6 +4,11 @@ import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
+import java.security.SecureRandom
+import java.security.cert.X509Certificate
+import javax.net.ssl.SSLContext
+import javax.net.ssl.TrustManager
+import javax.net.ssl.X509TrustManager
 
 class IdentityWrapper(
     private val keystoneUrl: String,
@@ -11,8 +16,31 @@ class IdentityWrapper(
     private val password: String,
     private val project: String,
     private val domain: String,
+    private val insecure: Boolean = true,
 ) {
-    private val httpClient = HttpClient.newBuilder().build()
+    private val httpClient = httpClient()
+
+    fun httpClient(): HttpClient {
+        return if (insecure) {
+            val trustAllCerts = arrayOf<TrustManager>(
+                object : X509TrustManager {
+                    override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
+                    override fun checkClientTrusted(chain: Array<X509Certificate>, authType: String) {}
+                    override fun checkServerTrusted(chain: Array<X509Certificate>, authType: String) {}
+                }
+            )
+
+            val sslContext = SSLContext.getInstance("TLS").apply {
+                init(null, trustAllCerts, SecureRandom())
+            }
+
+            HttpClient.newBuilder()
+                .sslContext(sslContext)
+                .build()
+        } else {
+            HttpClient.newBuilder().build()
+        }
+    }
 
     private fun getToken(): String {
         val authJson =

@@ -15,7 +15,7 @@ class OpenStackWrapper(
     private val password: String,
     private val domain: String,
     private val project: String,
-    private val allowInsecure: Boolean // TODO: Найти выход с прямым отключением сертификации
+    private val allowInsecure: Boolean = true // TODO: Найти выход с прямым отключением сертификации
 ) {
     private fun client(): OSClient.OSClientV3 {
         val config =

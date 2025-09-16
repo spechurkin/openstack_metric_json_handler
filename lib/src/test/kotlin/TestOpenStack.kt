@@ -2,10 +2,10 @@ package proj.work
 
 import me.nn2.libs.OpenStackWrapper
 
-const val identityUrl = "https://10.0.2.15:5000/v3/"
+const val identityUrl = "https://10.1.0.48:5000/v3"
 const val login = "admin"
-const val password = "59da528341503a01d9f1df2e5fcb5d76f8c07e64ab791c59937a93"
-const val domain = "default"
+const val password = "0d96e9f5d0ea5b2f8dab4"
+const val domain = "Default"
 const val project = "admin"
 
 fun main() {

@@ -11,22 +11,20 @@ class FlavorService(override val client: OSClientV3) : IMetricService {
     }
 
     private fun convertToDto(): List<FlavorData> {
-        val flavorData =
-            client.compute().flavors().list().map { flavor ->
-                convertToDto(flavor)
-            }
-        return flavorData
+        return client.compute().flavors().list().map { flavor ->
+            convertToDto(flavor)
+        }
     }
 
-    fun convertToDto(flavor: Flavor?): FlavorData {
+    fun convertToDto(flavor: Flavor): FlavorData {
         return FlavorData(
-            id = flavor?.id,
-            name = flavor?.name,
-            ram = flavor?.ram,
-            vcpu = flavor?.vcpus,
-            disk = flavor?.disk,
-            ephemeral = flavor?.ephemeral,
-            swap = flavor?.swap,
+            id = flavor.id,
+            name = flavor.name,
+            ram = flavor.ram,
+            vcpu = flavor.vcpus,
+            disk = flavor.disk,
+            ephemeral = flavor.ephemeral,
+            swap = flavor.swap,
         )
     }
 }

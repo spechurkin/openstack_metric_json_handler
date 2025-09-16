@@ -10,17 +10,20 @@ class ServerService(override val client: OSClientV3) : IMetricService {
     }
 
     private fun convertToDto(): List<ServerData> {
-        val serverData =
-            client.compute().servers().list().map { server ->
-                ServerData(
-                    id = server.id,
-                    name = server.name,
-                    status = server.status,
-                    flavor = FlavorService(client).convertToDto(server.flavor),
-                    created = server.created,
-                    updated = server.updated,
-                )
-            }
-        return serverData
+        return client.compute().servers().list().map { server ->
+            ServerData(
+                id = server.id,
+                name = server.name,
+                status = server.status,
+                flavor = FlavorService(client).convertToDto(server.flavor),
+                addresses = server.addresses.addresses.map {
+                    it.key + ": " + it.value.map { address -> address.addr }
+                },
+                securityGroups = server?.securityGroups?.map { it.name } ?: listOf(""),
+                keyName = server?.keyName,
+                created = server.created,
+                updated = server.updated
+            )
+        }
     }
 }

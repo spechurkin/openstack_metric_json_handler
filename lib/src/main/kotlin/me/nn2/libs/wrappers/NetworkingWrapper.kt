@@ -1,5 +1,9 @@
 package me.nn2.libs.wrappers
 
+import me.nn2.libs.data.networking.SecurityGroupData
+import me.nn2.libs.data.networking.SubnetData
+import me.nn2.libs.services.networking.SecurityGroupService
+import me.nn2.libs.services.networking.SubnetService
 import org.openstack4j.api.OSClient.OSClientV3
 import org.openstack4j.model.network.*
 
@@ -8,8 +12,8 @@ class NetworkingWrapper(val client: OSClientV3) {
         return client.networking().network().list()
     }
 
-    fun getSubnets(): List<Subnet> {
-        return client.networking().subnet().list()
+    fun getSubnets(): List<SubnetData> {
+        return SubnetService(client).getSubnets()
     }
 
     fun getPorts(): List<Port> {
@@ -20,8 +24,12 @@ class NetworkingWrapper(val client: OSClientV3) {
         return client.networking().router().list()
     }
 
-    fun getSecurityGroups(): List<SecurityGroup> {
-        return client.networking().securitygroup().list()
+    fun getSecurityGroups(): List<SecurityGroupData> {
+        return SecurityGroupService(client).getSecurityGroups()
+    }
+
+    fun getSecurityGroupRules(): List<SecurityGroupRule> {
+        return client.networking().securityrule().list()
     }
 
     fun getQuotas(): List<NetQuota> {
