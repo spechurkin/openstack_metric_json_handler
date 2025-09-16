@@ -14,13 +14,13 @@ class NetworkProcessor() : IProcessor {
         try {
             var dto: Set<Any> = setOf()
             when (metric) {
-                "network" -> dto = wrapper.getNetworks().toSet()
-                "subnet" -> dto = wrapper.getSubnets().toSet()
-                "port" -> dto = wrapper.getPorts().toSet()
-                "router" -> dto = wrapper.getRouters().toSet()
-                "securitygroup" -> dto = wrapper.getSecurityGroups().toSet()
+                "networks" -> dto = wrapper.getNetworks().toSet()
+                "subnets" -> dto = wrapper.getSubnets().toSet()
+                "ports" -> dto = wrapper.getPorts().toSet()
+                "routers" -> dto = wrapper.getRouters().toSet()
+                "securitygroups" -> dto = wrapper.getSecurityGroups().toSet()
                 "quotas" -> dto = wrapper.getQuotas().toSet()
-                "floatingip" -> dto = wrapper.getFloatingIps().toSet()
+                "floatingips" -> dto = wrapper.getFloatingIps().toSet()
             }
             MessageHelper.sendResponse(channel, dto)
         } catch (e: Exception) {
