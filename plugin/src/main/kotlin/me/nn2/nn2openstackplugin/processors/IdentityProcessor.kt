@@ -12,14 +12,14 @@ class IdentityProcessor() : IProcessor {
     override fun process(metric: String, wrapper: OpenStackWrapper, channel: RestChannel) {
         val wrapper = wrapper.identity()
         try {
-            var dto = ""
+            var dto: Set<Any> = setOf()
             when (metric) {
-                "users" -> dto = wrapper.getUsers()
-                "groups" -> dto = wrapper.getGroups()
-                "projects" -> dto = wrapper.getProjects()
-                "domains" -> dto = wrapper.getDomains()
+                "users" -> dto = wrapper.getUsers().toSet()
+                "groups" -> dto = wrapper.getGroups().toSet()
+                "projects" -> dto = wrapper.getProjects().toSet()
+                "domains" -> dto = wrapper.getDomains().toSet()
             }
-            MessageHelper.sendMessage(channel, dto)
+            MessageHelper.sendResponse(channel, dto)
         } catch (e: Exception) {
             logger.error(e.message)
             MessageHelper.sendExceptionMessage(channel, e)
