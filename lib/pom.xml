@@ -20,7 +20,7 @@
         <kotlin.code.style>official</kotlin.code.style>
         <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
 
-        <opensearch.version>2.18.0</opensearch.version>
+        <openstack4j.version>3.3</openstack4j.version>
     </properties>
 
     <repositories>
@@ -90,14 +90,14 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.pacesys</groupId>
+            <groupId>com.github.openstack4j.core</groupId>
             <artifactId>openstack4j-core</artifactId>
-            <version>3.1.0</version>
+            <version>${openstack4j.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.pacesys.openstack4j.connectors</groupId>
+            <groupId>com.github.openstack4j.core.connectors</groupId>
             <artifactId>openstack4j-httpclient</artifactId>
-            <version>3.1.0</version>
+            <version>${openstack4j.version}</version>
         </dependency>
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
