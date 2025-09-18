@@ -4,7 +4,7 @@ import me.nn2.libs.wrappers.BlockStorageWrapper
 import me.nn2.libs.wrappers.ComputeWrapper
 import me.nn2.libs.wrappers.IdentityWrapper
 import me.nn2.libs.wrappers.NetworkingWrapper
-import org.openstack4j.api.OSClient
+import org.openstack4j.api.OSClient.OSClientV3
 import org.openstack4j.core.transport.Config
 import org.openstack4j.model.common.Identifier
 import org.openstack4j.openstack.OSFactory
@@ -17,7 +17,7 @@ class OpenStackWrapper(
     private val project: String,
     private val allowInsecure: Boolean = true // TODO: Найти выход с прямым отключением сертификации
 ) {
-    private fun client(): OSClient.OSClientV3 {
+    fun client(): OSClientV3 {
         val config =
             if (allowInsecure) {
                 Config.newConfig().withSSLVerificationDisabled()
@@ -37,7 +37,7 @@ class OpenStackWrapper(
 
     fun compute() = ComputeWrapper(client())
 
-    fun identity() = IdentityWrapper(authUrl, username, password, project, domain)
+    fun identity() = IdentityWrapper(client())
 
     fun blockStorage() = BlockStorageWrapper(client())
 

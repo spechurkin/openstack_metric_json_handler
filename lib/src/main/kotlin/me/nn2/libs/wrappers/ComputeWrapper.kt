@@ -13,7 +13,7 @@ import org.openstack4j.model.compute.ext.Hypervisor
 import org.openstack4j.model.compute.ext.Migration
 import org.openstack4j.model.compute.ext.Service
 
-class ComputeWrapper(val client: OSClientV3) {
+class ComputeWrapper(client: OSClientV3) : AWrapper(client) {
     fun getFlavors(): List<FlavorData> {
         return FlavorService(client).getFlavors()
     }

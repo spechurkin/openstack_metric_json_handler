@@ -1,159 +1,91 @@
 package me.nn2.libs.wrappers
 
-import com.google.gson.Gson
-import me.nn2.libs.data.identity.*
-import java.net.URI
-import java.net.http.HttpClient
-import java.net.http.HttpRequest
-import java.net.http.HttpResponse
-import java.security.SecureRandom
-import java.security.cert.X509Certificate
-import javax.net.ssl.SSLContext
-import javax.net.ssl.TrustManager
-import javax.net.ssl.X509TrustManager
+import me.nn2.libs.data.identity.DomainData
+import me.nn2.libs.data.identity.GroupData
+import me.nn2.libs.data.identity.ProjectData
+import me.nn2.libs.data.identity.UserData
+import org.openstack4j.api.OSClient.OSClientV3
+import org.openstack4j.model.identity.v3.Domain
+import org.openstack4j.model.identity.v3.User
 
-class IdentityWrapper(
-    private val keystoneUrl: String,
-    private val username: String,
-    private val password: String,
-    private val project: String,
-    private val domain: String,
-    private val insecure: Boolean = true,
-) {
-    private val httpClient = httpClient()
-
-    fun httpClient(): HttpClient {
-        return if (insecure) {
-            val trustAllCerts = arrayOf<TrustManager>(
-                object : X509TrustManager {
-                    override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
-                    override fun checkClientTrusted(chain: Array<X509Certificate>, authType: String) {}
-                    override fun checkServerTrusted(chain: Array<X509Certificate>, authType: String) {}
-                }
-            )
-
-            val sslContext = SSLContext.getInstance("TLS").apply {
-                init(null, trustAllCerts, SecureRandom())
-            }
-
-            HttpClient.newBuilder()
-                .sslContext(sslContext)
-                .build()
-        } else {
-            HttpClient.newBuilder().build()
-        }
-    }
-
-    private fun getToken(): String {
-        val authJson =
-            """
-            {
-              "auth": {
-                "identity": {
-                  "methods": ["password"],
-                  "password": {
-                    "user": {
-                      "name": "$username",
-                      "domain": { "name": "$domain" },
-                      "password": "$password"
-                    }
-                  }
-                },
-                "scope": {
-                  "project": {
-                    "name": "$project",
-                    "domain": { "name": "$domain" }
-                  }
-                }
-              }
-            }
-            """.trimIndent()
-
-        val request =
-            HttpRequest.newBuilder()
-                .uri(URI.create("$keystoneUrl/auth/tokens"))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(authJson))
-                .build()
-
-        val response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
-        if (response.statusCode() != 201) {
-            throw RuntimeException("Failed to authentificate: ${response.statusCode()} ${response.body()}")
-        }
-
-        return response.headers().firstValue("X-Subject-Token")
-            .orElseThrow { RuntimeException("Missing X-Subject-Token") }
-    }
-
+class IdentityWrapper(client: OSClientV3) : AWrapper(client) {
     fun getUsers(): List<UserData> {
-        val token = getToken()
-        val request =
-            HttpRequest.newBuilder()
-                .uri(URI.create("$keystoneUrl/users"))
-                .header("X-Auth-Token", token)
-                .GET()
-                .build()
-
-        val response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
-        if (response.statusCode() !in 200..209) {
-            throw RuntimeException("Failed to get users: ${response.statusCode()} ${response.body()}")
+        return client.identity().users().list().map {
+            convertUserToDto(it)
         }
-        val users = Gson().fromJson(response.body(), UsersResponse::class.java).users
-
-        return users
     }
 
     fun getGroups(): List<GroupData> {
-        val token = getToken()
-        val request =
-            HttpRequest.newBuilder()
-                .uri(URI.create("$keystoneUrl/groups"))
-                .header("X-Auth-Token", token)
-                .GET()
-                .build()
-
-        val response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
-        if (response.statusCode() !in 200..209) {
-            throw RuntimeException("Failed to get groups: ${response.statusCode()} ${response.body()}")
+        return client.identity().groups().list().map { group ->
+            GroupData(
+                id = group.id,
+                name = group.name,
+                description = group.description,
+                domainId = group.domainId,
+                groupUsers = client.identity()
+                    .groups().listGroupUsers(group.id)
+                    .map { it.name }
+            )
         }
-        val groups = Gson().fromJson(response.body(), GroupsResponse::class.java).groups
-
-        return groups
     }
 
+    // TODO: Отслеживать обновления openstack4j, на данный момент вывод projects выдаёт ошибку
     fun getProjects(): List<ProjectData> {
-        val token = getToken()
-        val request =
-            HttpRequest.newBuilder()
-                .uri(URI.create("$keystoneUrl/projects"))
-                .header("X-Auth-Token", token)
-                .GET()
-                .build()
-
-        val response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
-        if (response.statusCode() !in 200..209) {
-            throw RuntimeException("Failed to get projects: ${response.statusCode()} ${response.body()}")
-        }
-        val projects = Gson().fromJson(response.body(), ProjectsResponse::class.java).projects
-
-        return projects
+        /*        return client.identity().projects().list().map {
+                    ProjectData(
+                        id = it.id,
+                        name = it.name,
+                        description = it.description,
+                        domainId = it.domainId,
+                        domain = convertDomainToDto(it.domain),
+                        enabled = it.isEnabled,
+                        parentId = it.parentId,
+                        parents = it.parents
+                    )
+                }*/
+        return listOf(
+            ProjectData(
+                id = "it.id",
+                name = "it.name",
+                description = "it.description",
+                domainId = "it.domainId",
+                domain = DomainData(
+                    id = "domain.id",
+                    name = "domain.name",
+                    description = "domain.description",
+                    enabled = false
+                ),
+                enabled = false,
+                parentId = "it.parentId",
+                parents = "it.parents"
+            )
+        )
     }
 
     fun getDomains(): List<DomainData> {
-        val token = getToken()
-        val request =
-            HttpRequest.newBuilder()
-                .uri(URI.create("$keystoneUrl/domains"))
-                .header("X-Auth-Token", token)
-                .GET()
-                .build()
-
-        val response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
-        if (response.statusCode() !in 200..209) {
-            throw RuntimeException("Failed to get projects: ${response.statusCode()} ${response.body()}")
+        return client.identity().domains().list().map {
+            convertDomainToDto(it)
         }
-        val domains = Gson().fromJson(response.body(), DomainsResponse::class.java).domains
+    }
 
-        return domains
+    private fun convertUserToDto(user: User): UserData {
+        return UserData(
+            id = user.id,
+            name = user.name,
+            description = user.description,
+            email = user.email,
+            domainId = user.domainId,
+            enabled = user.isEnabled,
+            defaultProjectId = user.defaultProjectId
+        )
+    }
+
+    private fun convertDomainToDto(domain: Domain): DomainData {
+        return DomainData(
+            id = domain.id,
+            name = domain.name,
+            description = domain.description,
+            enabled = domain.isEnabled
+        )
     }
 }

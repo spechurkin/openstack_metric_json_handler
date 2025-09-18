@@ -7,7 +7,7 @@ import org.openstack4j.model.storage.block.VolumeBackup
 import org.openstack4j.model.storage.block.VolumeSnapshot
 import org.openstack4j.model.storage.block.ext.Service
 
-class BlockStorageWrapper(val client: OSClientV3) {
+class BlockStorageWrapper(client: OSClientV3) : AWrapper(client) {
     fun getVolumes(): List<VolumeData> {
         return VolumeService(client).getVolume()
     }

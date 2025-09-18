@@ -7,7 +7,7 @@ import me.nn2.libs.services.networking.SubnetService
 import org.openstack4j.api.OSClient.OSClientV3
 import org.openstack4j.model.network.*
 
-class NetworkingWrapper(val client: OSClientV3) {
+class NetworkingWrapper(client: OSClientV3) : AWrapper(client) {
     fun getNetworks(): List<Network> {
         return client.networking().network().list()
     }
