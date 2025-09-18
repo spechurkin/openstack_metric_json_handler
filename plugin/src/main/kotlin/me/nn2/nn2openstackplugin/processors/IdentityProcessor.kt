@@ -2,11 +2,11 @@ package me.nn2.nn2openstackplugin.processors
 
 import me.nn2.libs.OpenStackWrapper
 import me.nn2.nn2openstackplugin.support.MessageHelper
+import org.apache.logging.log4j.LogManager
 import org.opensearch.rest.RestChannel
-import org.slf4j.LoggerFactory
 
 class IdentityProcessor() : IProcessor {
-    private val logger = LoggerFactory.getLogger(ComputeProcessor::class.java)
+    private val logger = LogManager.getLogger(IdentityProcessor::class.java)
 
     @Throws
     override fun process(metric: String, wrapper: OpenStackWrapper, channel: RestChannel) {
