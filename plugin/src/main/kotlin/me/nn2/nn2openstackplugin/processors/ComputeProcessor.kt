@@ -31,7 +31,7 @@ class ComputeProcessor() : IProcessor {
             }
             MessageHelper.sendResponse(channel, dto)
         } catch (e: Exception) {
-            logger.error(e.message)
+            logger.error(e.message, e)
             MessageHelper.sendExceptionMessage(channel, e)
         }
     }
