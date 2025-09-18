@@ -1,6 +1,6 @@
 # Project exclude paths
-/extractionlib/target/
-/openstackmetricshandler/target/
+/lib/target/
+/plugin/target/
 
 target/
 !.mvn/wrapper/maven-wrapper.jar
