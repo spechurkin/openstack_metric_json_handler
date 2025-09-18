@@ -1,5 +1,7 @@
 package me.nn2.libs.wrappers
 
+import com.google.gson.Gson
+import me.nn2.libs.data.identity.*
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
@@ -83,7 +85,7 @@ class IdentityWrapper(
             .orElseThrow { RuntimeException("Missing X-Subject-Token") }
     }
 
-    fun getUsers(): String {
+    fun getUsers(): List<UserData> {
         val token = getToken()
         val request =
             HttpRequest.newBuilder()
@@ -96,11 +98,12 @@ class IdentityWrapper(
         if (response.statusCode() !in 200..209) {
             throw RuntimeException("Failed to get users: ${response.statusCode()} ${response.body()}")
         }
+        val users = Gson().fromJson(response.body(), UsersResponse::class.java).users
 
-        return response.body()
+        return users
     }
 
-    fun getGroups(): String {
+    fun getGroups(): List<GroupData> {
         val token = getToken()
         val request =
             HttpRequest.newBuilder()
@@ -113,11 +116,12 @@ class IdentityWrapper(
         if (response.statusCode() !in 200..209) {
             throw RuntimeException("Failed to get groups: ${response.statusCode()} ${response.body()}")
         }
+        val groups = Gson().fromJson(response.body(), GroupsResponse::class.java).groups
 
-        return response.body()
+        return groups
     }
 
-    fun getProjects(): String {
+    fun getProjects(): List<ProjectData> {
         val token = getToken()
         val request =
             HttpRequest.newBuilder()
@@ -130,11 +134,12 @@ class IdentityWrapper(
         if (response.statusCode() !in 200..209) {
             throw RuntimeException("Failed to get projects: ${response.statusCode()} ${response.body()}")
         }
+        val projects = Gson().fromJson(response.body(), ProjectsResponse::class.java).projects
 
-        return response.body()
+        return projects
     }
 
-    fun getDomains(): String {
+    fun getDomains(): List<DomainData> {
         val token = getToken()
         val request =
             HttpRequest.newBuilder()
@@ -147,7 +152,8 @@ class IdentityWrapper(
         if (response.statusCode() !in 200..209) {
             throw RuntimeException("Failed to get projects: ${response.statusCode()} ${response.body()}")
         }
+        val domains = Gson().fromJson(response.body(), DomainsResponse::class.java).domains
 
-        return response.body()
+        return domains
     }
 }
