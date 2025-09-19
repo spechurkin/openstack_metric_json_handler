@@ -3,7 +3,7 @@ package me.nn2.libs.services.compute
 import me.nn2.libs.data.compute.ImageData
 import me.nn2.libs.services.IMetricService
 import org.openstack4j.api.OSClient.OSClientV3
-import org.openstack4j.model.compute.Image
+import org.openstack4j.model.image.v2.Image
 
 class ImageService(override val client: OSClientV3) : IMetricService {
     fun getImages(): List<ImageData> {
@@ -11,7 +11,7 @@ class ImageService(override val client: OSClientV3) : IMetricService {
     }
 
     private fun convertToDto(): List<ImageData> {
-        return client.compute().images().list().map { image ->
+        return client.imagesV2().list().map { image ->
             convertToDto(image)
         }
     }
@@ -24,8 +24,8 @@ class ImageService(override val client: OSClientV3) : IMetricService {
             minDisk = image.minDisk,
             size = image.size,
             status = image.status,
-            created = image.created,
-            updated = image.updated,
+            createdAt = image.createdAt,
+            updatedAt = image.updatedAt,
         )
     }
 }

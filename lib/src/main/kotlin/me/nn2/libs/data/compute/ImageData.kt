@@ -1,15 +1,15 @@
 package me.nn2.libs.data.compute
 
-import org.openstack4j.model.compute.Image.Status
+import org.openstack4j.model.image.v2.Image.ImageStatus
 import java.util.*
 
 data class ImageData(
     var id: String?,
     var name: String?,
-    var minRam: Int?,
-    var minDisk: Int?,
+    var minRam: Long?,
+    var minDisk: Long?,
     var size: Long?,
-    var status: Status?,
-    var created: Date?,
-    var updated: Date?,
+    var status: ImageStatus?,
+    var createdAt: Date?,
+    var updatedAt: Date?,
 )
