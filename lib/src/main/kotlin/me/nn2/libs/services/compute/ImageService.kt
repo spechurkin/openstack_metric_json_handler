@@ -11,8 +11,8 @@ class ImageService(override val client: OSClientV3) : IMetricService {
     }
 
     private fun convertToDto(): List<ImageData> {
-        return client.compute().images().list().map { flavor ->
-            convertToDto(flavor)
+        return client.compute().images().list().map { image ->
+            convertToDto(image)
         }
     }
 
