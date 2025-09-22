@@ -16,8 +16,8 @@
         <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
 
         <nn2.openstack.lib.version>0.2.5</nn2.openstack.lib.version>
-        <revision>${version}-os${opensearch.version}</revision>
-        <opensearch.nn2.openstack.plugin.version>${version}_os${opensearch.version}
+        <revision>${project.version}-os${opensearch.version}</revision>
+        <opensearch.nn2.openstack.plugin.version>${project.version}_os${opensearch.version}
         </opensearch.nn2.openstack.plugin.version>
         <opensearch.nn2.openstack.plugin.description>OpenStack Monitor plugin by NN2 (https://nn2.me)
         </opensearch.nn2.openstack.plugin.description>

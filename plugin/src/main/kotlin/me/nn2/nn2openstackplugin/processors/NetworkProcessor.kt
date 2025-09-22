@@ -10,18 +10,18 @@ class NetworkProcessor() : IProcessor {
 
     @Throws
     override fun process(metric: String, wrapper: OpenStackWrapper, channel: RestChannel) {
-        val wrapper = wrapper.networking()
+        val networking = wrapper.networking()
         try {
             var dto: Set<Any> = setOf()
             when (metric) {
-                "networks" -> dto = wrapper.getNetworks().toSet()
-                "subnets" -> dto = wrapper.getSubnets().toSet()
-                "ports" -> dto = wrapper.getPorts().toSet()
-                "routers" -> dto = wrapper.getRouters().toSet()
-                "securityGroups" -> dto = wrapper.getSecurityGroups().toSet()
-                "securityRules" -> dto = wrapper.getSecurityGroupRules().toSet()
-                "quotas" -> dto = wrapper.getQuotas().toSet()
-                "floatingIps" -> dto = wrapper.getFloatingIps().toSet()
+                "networks" -> dto = networking.getNetworks().toSet()
+                "subnets" -> dto = networking.getSubnets().toSet()
+                "ports" -> dto = networking.getPorts().toSet()
+                "routers" -> dto = networking.getRouters().toSet()
+                "securityGroups" -> dto = networking.getSecurityGroups().toSet()
+                "securityRules" -> dto = networking.getSecurityGroupRules().toSet()
+                "quotas" -> dto = networking.getQuotas().toSet()
+                "floatingIps" -> dto = networking.getFloatingIps().toSet()
             }
             MessageHelper.sendResponse(channel, dto)
         } catch (e: Exception) {

@@ -10,14 +10,14 @@ class StorageProcessor() : IProcessor {
 
     @Throws
     override fun process(metric: String, wrapper: OpenStackWrapper, channel: RestChannel) {
-        val wrapper = wrapper.blockStorage()
+        val storage = wrapper.blockStorage()
         try {
             var dto: Set<Any> = setOf()
             when (metric) {
-                "volumes" -> dto = wrapper.getVolumes().toSet()
-                "backups" -> dto = wrapper.getBackups().toSet()
-                "snapshots" -> dto = wrapper.getSnapshots().toSet()
-                "services" -> dto = wrapper.getServices().toSet()
+                "volumes" -> dto = storage.getVolumes().toSet()
+                "backups" -> dto = storage.getBackups().toSet()
+                "snapshots" -> dto = storage.getSnapshots().toSet()
+                "services" -> dto = storage.getServices().toSet()
             }
             MessageHelper.sendResponse(channel, dto)
         } catch (e: Exception) {

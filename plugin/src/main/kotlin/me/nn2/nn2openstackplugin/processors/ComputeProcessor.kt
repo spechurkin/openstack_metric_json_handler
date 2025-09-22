@@ -10,24 +10,24 @@ class ComputeProcessor() : IProcessor {
 
     @Throws
     override fun process(metric: String, wrapper: OpenStackWrapper, channel: RestChannel) {
-        val wrapper = wrapper.compute()
+        val compute = wrapper.compute()
         try {
             var dto: Set<Any> = setOf()
             when (metric) {
-                "servers" -> dto = wrapper.getServers().toSet()
-                "images" -> dto = wrapper.getImages().toSet()
-                "flavors" -> dto = wrapper.getFlavors().toSet()
-                "keypairs" -> dto = wrapper.getKeypairs().toSet()
-                "services" -> dto = wrapper.getServices().toSet()
-                "floatingIps" -> dto = wrapper.getFloatingIps().toSet()
-                "hosts" -> dto = wrapper.getHosts().toSet()
-                "zones" -> dto = wrapper.getZones().toSet()
-                "migrations" -> dto = wrapper.getMigrations().toSet()
-                "hypervisors" -> dto = wrapper.getHypervisors().toSet()
-                "hostAggregates" -> dto = wrapper.getHostAggregates().toSet()
-                "serverGroups" -> dto = wrapper.getServerGroups().toSet()
-                "securityGroups" -> dto = wrapper.getSecurityGroups().toSet()
-                "securityRules" -> dto = wrapper.getSecurityRules().toSet()
+                "servers" -> dto = compute.getServers().toSet()
+                "images" -> dto = compute.getImages().toSet()
+                "flavors" -> dto = compute.getFlavors().toSet()
+                "keypairs" -> dto = compute.getKeypairs().toSet()
+                "services" -> dto = compute.getServices().toSet()
+                "floatingIps" -> dto = compute.getFloatingIps().toSet()
+                "hosts" -> dto = compute.getHosts().toSet()
+                "zones" -> dto = compute.getZones().toSet()
+                "migrations" -> dto = compute.getMigrations().toSet()
+                "hypervisors" -> dto = compute.getHypervisors().toSet()
+                "hostAggregates" -> dto = compute.getHostAggregates().toSet()
+                "serverGroups" -> dto = compute.getServerGroups().toSet()
+                "securityGroups" -> dto = compute.getSecurityGroups().toSet()
+                "securityRules" -> dto = compute.getSecurityRules().toSet()
             }
             MessageHelper.sendResponse(channel, dto)
         } catch (e: Exception) {
