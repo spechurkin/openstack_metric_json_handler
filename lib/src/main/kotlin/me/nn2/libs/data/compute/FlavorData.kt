@@ -8,4 +8,5 @@ data class FlavorData(
     var disk: Int?,
     var ephemeral: Int?,
     var swap: Int?,
+    val rxtx: Float,
 )

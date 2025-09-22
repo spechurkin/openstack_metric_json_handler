@@ -25,6 +25,7 @@ class FlavorService(override val client: OSClientV3) : IMetricService {
             disk = flavor.disk,
             ephemeral = flavor.ephemeral,
             swap = flavor.swap,
+            rxtx = flavor.rxtxFactor
         )
     }
 }

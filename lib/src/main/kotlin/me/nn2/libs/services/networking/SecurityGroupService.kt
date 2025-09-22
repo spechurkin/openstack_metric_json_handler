@@ -10,12 +10,12 @@ class SecurityGroupService(override val client: OSClient.OSClientV3) : IMetricSe
     }
 
     private fun convertToDto(): List<SecurityGroupData> {
-        return client.networking().securitygroup().list().map { mapEntry ->
+        return client.networking().securitygroup().list().map {
             SecurityGroupData(
-                id = mapEntry.id,
-                name = mapEntry.name,
-                description = mapEntry.description,
-                rules = mapEntry.rules.map { rule ->
+                id = it.id,
+                name = it.name,
+                description = it.description,
+                rules = it.rules.map { rule ->
                     rule.id
                 }
             )
