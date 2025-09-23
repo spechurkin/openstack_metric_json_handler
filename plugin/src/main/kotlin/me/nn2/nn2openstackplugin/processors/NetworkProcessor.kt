@@ -25,6 +25,7 @@ class NetworkProcessor() : IProcessor {
                     contains("securityRules") -> dto = networking.getSecurityGroupRules().toSet()
                     contains("quotas") -> dto = networking.getQuotas().toSet()
                     contains("floatingIps") -> dto = networking.getFloatingIps().toSet()
+                    else -> logger.warn("Bad request!")
                 }
             }
             MessageHelper.sendResponse(channel, dto)

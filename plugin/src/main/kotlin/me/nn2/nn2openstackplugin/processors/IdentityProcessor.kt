@@ -21,6 +21,7 @@ class IdentityProcessor() : IProcessor {
                     contains("groups") -> dto = identity.getGroups().toSet()
                     contains("projects") -> dto = identity.getProjects().toSet()
                     contains("domains") -> dto = identity.getDomains().toSet()
+                    else -> logger.warn("Bad request!")
                 }
             }
             MessageHelper.sendResponse(channel, dto)

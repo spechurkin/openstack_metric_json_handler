@@ -15,7 +15,7 @@ class ComputeProcessor() : IProcessor {
     override fun process(wrapper: OpenStackWrapper, channel: RestChannel, request: RestRequest?) {
         val compute = wrapper.compute()
         when (request?.method()) {
-            RestRequest.Method.GET ->
+            RestRequest.Method.GET -> {
                 try {
                     var dto: Set<Any> = setOf()
                     with(request.path()?.lowercase(Locale.getDefault())!!) {
@@ -34,6 +34,7 @@ class ComputeProcessor() : IProcessor {
                             contains("serverGroups") -> dto = compute.getServerGroups().toSet()
                             contains("securityGroups") -> dto = compute.getSecurityGroups().toSet()
                             contains("securityRules") -> dto = compute.getSecurityRules().toSet()
+                            else -> logger.warn("Bad request!")
                         }
                     }
                     MessageHelper.sendResponse(channel, dto)
@@ -41,6 +42,7 @@ class ComputeProcessor() : IProcessor {
                     logger.error(e.message, e)
                     MessageHelper.sendExceptionMessage(channel, e)
                 }
+            }
 
             RestRequest.Method.POST ->
                 with(request.path().lowercase(Locale.getDefault())) {
@@ -81,6 +83,7 @@ class ComputeProcessor() : IProcessor {
                                 MessageHelper.sendExceptionMessage(channel, e)
                             }
                         }
+                        else -> logger.warn("Bad request!")
                     }
                 }
 

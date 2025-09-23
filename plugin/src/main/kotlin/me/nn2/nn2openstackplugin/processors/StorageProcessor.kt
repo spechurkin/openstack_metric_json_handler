@@ -21,6 +21,7 @@ class StorageProcessor() : IProcessor {
                     contains("backups") -> dto = storage.getBackups().toSet()
                     contains("snapshots") -> dto = storage.getSnapshots().toSet()
                     contains("services") -> dto = storage.getServices().toSet()
+                    else -> logger.warn("Bad request!")
                 }
             }
             MessageHelper.sendResponse(channel, dto)
