@@ -32,7 +32,7 @@ class IdentityMetricsAction(private val wrapper: OpenStackWrapper) : BaseRestHan
         return try {
             RestChannelConsumer {
                 try {
-                    processor.process(metric!!, wrapper, it)
+                    processor.process(wrapper, it, p0)
                 } catch (e: Exception) {
                     MessageHelper.sendExceptionMessage(it, e)
                 }

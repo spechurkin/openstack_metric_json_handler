@@ -38,13 +38,12 @@ class ComputeMetricsAction(private val wrapper: OpenStackWrapper) :
     override fun prepareRequest(
         p0: RestRequest?, p1: NodeClient?
     ): RestChannelConsumer? {
-        val metric = p0?.path()
         val processor = ComputeProcessor()
 
         return try {
             RestChannelConsumer {
                 try {
-                    processor.process(metric!!, wrapper, it, p0)
+                    processor.process(wrapper, it, p0)
                 } catch (e: Exception) {
                     MessageHelper.sendExceptionMessage(it, e)
                 }
