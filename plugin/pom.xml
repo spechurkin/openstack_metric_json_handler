@@ -6,7 +6,7 @@
 
     <groupId>me.nn2</groupId>
     <artifactId>nn2openstackplugin</artifactId>
-    <version>0.2.5</version>
+    <version>0.3.1</version>
 
     <properties>
         <ktor.version>2.3.7</ktor.version>
@@ -15,7 +15,7 @@
         <kotlin.code.style>official</kotlin.code.style>
         <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
 
-        <nn2.openstack.lib.version>0.2.5</nn2.openstack.lib.version>
+        <nn2.openstack.lib.version>0.3.1</nn2.openstack.lib.version>
         <revision>${project.version}-os${opensearch.version}</revision>
         <opensearch.nn2.openstack.plugin.version>${project.version}_os${opensearch.version}
         </opensearch.nn2.openstack.plugin.version>

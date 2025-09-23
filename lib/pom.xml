@@ -6,7 +6,7 @@
 
     <groupId>me.nn2.libs</groupId>
     <artifactId>openstack-lib</artifactId>
-    <version>0.2.5</version>
+    <version>0.3.1</version>
 
     <properties>
         <kotlin.version>1.9.24</kotlin.version>
