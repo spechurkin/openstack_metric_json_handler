@@ -3,32 +3,38 @@ package proj.work.consoleCreation.network
 import org.openstack4j.api.Builders
 import proj.work.consoleCreation.compute.os
 
-fun main(args: Array<String>) {
-    createNetwork(args)
-    updateNetwork(args.getOrElse(0) { "DefaultNetwork" }, "New Network", isShared = true, isAdmin = true)
+fun main() {
+    createNetwork(os.identity().projects().list().find { it.name == "admin" }?.id, "DefaultNetwork")
+    updateNetwork(
+        getNetworkIdByName("DefaultNetwork"),
+        "New Network",
+        isShared = true,
+        isAdmin = true
+    )
 }
 
-fun createNetwork(args: Array<String>) {
-    val projectId =
-        args.getOrElse(1) { os.identity().projects().list().find { project -> project.name == "admin" }?.id }
-
+fun createNetwork(projectId: String?, networkName: String) {
     val networkCreate = Builders.network()
-        .name(args.getOrElse(0) { "DefaultNetwork" })
+        .name(networkName)
         .tenantId(projectId)
         .build()
 
     os.networking().network().create(networkCreate)
 }
 
-fun updateNetwork(networkName: String, newName: String, isShared: Boolean, isAdmin: Boolean) {
+fun updateNetwork(networkId: String?, newName: String, isShared: Boolean, isAdmin: Boolean) {
     os.networking().network().update(
-        getNetworkIdByName(networkName),
+        networkId,
         Builders.networkUpdate()
             .name(newName)
             .shared(isShared)
             .adminStateUp(isAdmin)
             .build()
     )
+}
+
+fun deleteNetwork(networkId: String?) {
+    os.networking().network().delete(networkId)
 }
 
 fun getNetworkIdByName(networkName: String): String? {

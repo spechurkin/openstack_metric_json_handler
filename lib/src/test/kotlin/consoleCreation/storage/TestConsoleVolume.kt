@@ -51,6 +51,10 @@ fun createSnapshot(volumeName: String, description: String = "snapshot of $volum
     )
 }
 
+fun removeVolume(volumeName: String) {
+    os.blockStorage().volumes().delete(getVolumeIdByName(volumeName))
+}
+
 fun getVolumeIdByName(volumeName: String): String? {
     return os.blockStorage().volumes().list(mapOf("name" to volumeName)).firstOrNull()?.id
 }

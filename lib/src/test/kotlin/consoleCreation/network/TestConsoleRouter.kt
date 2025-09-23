@@ -50,6 +50,10 @@ fun detachInterface(routerId: String, subnetId: String) {
     os.networking().router().detachInterface(routerId, subnetId, null)
 }
 
+fun deleteRouter(routerId: String) {
+    os.networking().router().delete(routerId)
+}
+
 fun getRouterIdByName(routerName: String): String? {
     return os.networking().router().list().find { it.name == routerName }!!.id
 }
