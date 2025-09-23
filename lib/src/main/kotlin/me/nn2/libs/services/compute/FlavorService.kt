@@ -10,10 +10,8 @@ class FlavorService(override val client: OSClientV3) : IMetricService {
         return convertToDto()
     }
 
-    private fun convertToDto(): List<FlavorData> {
-        return client.compute().flavors().list().map { flavor ->
-            convertToDto(flavor)
-        }
+    fun getFlavorIdByName(flavorName: String): String? {
+        return client.compute().flavors().list(mapOf("name" to flavorName)).firstOrNull()?.id
     }
 
     fun convertToDto(flavor: Flavor): FlavorData {
@@ -27,5 +25,9 @@ class FlavorService(override val client: OSClientV3) : IMetricService {
             swap = flavor.swap,
             rxtx = flavor.rxtxFactor
         )
+    }
+
+    private fun convertToDto(): List<FlavorData> {
+        return client.compute().flavors().list().map { convertToDto(it) }
     }
 }

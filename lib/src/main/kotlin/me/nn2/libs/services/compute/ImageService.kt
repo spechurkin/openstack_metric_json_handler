@@ -10,10 +10,8 @@ class ImageService(override val client: OSClientV3) : IMetricService {
         return convertToDto()
     }
 
-    private fun convertToDto(): List<ImageData> {
-        return client.imagesV2().list().map { image ->
-            convertToDto(image)
-        }
+    fun getImageIdByName(imageName: String): String? {
+        return client.imagesV2().list(mapOf("name" to imageName)).firstOrNull()?.id
     }
 
     fun convertToDto(image: Image): ImageData {
@@ -27,5 +25,11 @@ class ImageService(override val client: OSClientV3) : IMetricService {
             createdAt = image.createdAt,
             updatedAt = image.updatedAt,
         )
+    }
+
+    private fun convertToDto(): List<ImageData> {
+        return client.imagesV2().list().map { image ->
+            convertToDto(image)
+        }
     }
 }

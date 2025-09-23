@@ -26,6 +26,24 @@ class ComputeWrapper(client: OSClientV3) : AWrapper(client) {
         return ServerService(client).getServers()
     }
 
+    fun createServer(
+        serverName: String,
+        imageName: String,
+        flavorName: String,
+        adminPass: String? = "admin",
+        keyPair: String?,
+        networkNames: List<String>?
+    ): ServerData {
+        return ServerService(client).createServer(
+            serverName = serverName,
+            imageName = imageName,
+            flavorName = flavorName,
+            adminPass = adminPass,
+            keyPair = keyPair,
+            networkNames = networkNames
+        )
+    }
+
     fun getKeypairs(): List<Keypair> {
         return client.compute().keypairs().list()
     }
