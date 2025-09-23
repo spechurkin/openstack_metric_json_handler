@@ -26,13 +26,12 @@ class BlockStorageMetricsAction(private val wrapper: OpenStackWrapper) : BaseRes
         p0: RestRequest?,
         p1: NodeClient?
     ): RestChannelConsumer? {
-        val metric = p0?.path()?.split("/".toRegex())?.last()
         val processor = StorageProcessor()
 
         return try {
             RestChannelConsumer {
                 try {
-                    processor.process(metric!!, wrapper, it)
+                    processor.process(wrapper, it, p0)
                 } catch (e: Exception) {
                     MessageHelper.sendExceptionMessage(it, e)
                 }

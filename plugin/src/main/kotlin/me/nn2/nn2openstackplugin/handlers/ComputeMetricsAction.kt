@@ -17,6 +17,8 @@ class ComputeMetricsAction(private val wrapper: OpenStackWrapper) :
     override fun routes(): List<RestHandler.Route?>? {
         return listOf(
             RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.COMPUTE_PATH}/servers"),
+            RestHandler.Route(RestRequest.Method.POST, "${GlobalSettings.COMPUTE_PATH}/servers/create"),
+
             RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.COMPUTE_PATH}/images"),
             RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.COMPUTE_PATH}/flavors"),
             RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.COMPUTE_PATH}/keypairs"),
@@ -36,13 +38,13 @@ class ComputeMetricsAction(private val wrapper: OpenStackWrapper) :
     override fun prepareRequest(
         p0: RestRequest?, p1: NodeClient?
     ): RestChannelConsumer? {
-        val metric = p0?.path()?.split("/".toRegex())?.last()
+        val metric = p0?.path()
         val processor = ComputeProcessor()
 
         return try {
             RestChannelConsumer {
                 try {
-                    processor.process(metric!!, wrapper, it)
+                    processor.process(metric!!, wrapper, it, p0)
                 } catch (e: Exception) {
                     MessageHelper.sendExceptionMessage(it, e)
                 }
