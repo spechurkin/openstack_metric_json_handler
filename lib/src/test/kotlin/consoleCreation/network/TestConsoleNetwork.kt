@@ -5,12 +5,12 @@ import proj.work.consoleCreation.compute.os
 
 fun main() {
     createNetwork(os.identity().projects().list().find { it.name == "admin" }?.id, "DefaultNetwork")
-    updateNetwork(
-        getNetworkIdByName("DefaultNetwork"),
-        "New Network",
-        isShared = true,
-        isAdmin = true
-    )
+//    updateNetwork(
+//        getNetworkIdByName("DefaultNetwork"),
+//        "New Network",
+//        isShared = true,
+//        isAdmin = true
+//    )
 }
 
 fun createNetwork(projectId: String?, networkName: String) {
