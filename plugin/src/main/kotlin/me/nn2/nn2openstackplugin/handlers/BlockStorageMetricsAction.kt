@@ -16,8 +16,13 @@ class BlockStorageMetricsAction(private val wrapper: OpenStackWrapper) : BaseRes
     override fun routes(): List<RestHandler.Route?>? {
         return listOf(
             RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.STORAGE_PATH}/volumes"),
+            RestHandler.Route(RestRequest.Method.POST, "${GlobalSettings.STORAGE_PATH}/volumes/create"),
+
             RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.STORAGE_PATH}/backups"),
+
             RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.STORAGE_PATH}/snapshots"),
+            RestHandler.Route(RestRequest.Method.POST, "${GlobalSettings.STORAGE_PATH}/snapshots/create"),
+
             RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.STORAGE_PATH}/services")
         )
     }
