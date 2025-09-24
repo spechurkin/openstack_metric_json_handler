@@ -20,7 +20,7 @@ class NetworkProcessor() : IProcessor {
             RestRequest.Method.GET -> {
                 try {
                     var dto: Set<Any> = setOf()
-                    with(request.path()?.lowercase(Locale.getDefault())!!) {
+                    with(request.path()) {
                         when {
                             contains("networks") -> dto = networking.getNetworks().toSet()
                             contains("subnets") -> dto = networking.getSubnets().toSet()
@@ -40,7 +40,7 @@ class NetworkProcessor() : IProcessor {
                 }
             }
 
-            RestRequest.Method.POST -> with(request.path().lowercase(Locale.getDefault())) {
+            RestRequest.Method.POST -> with(request.path()) {
                 when {
                     contains("networks/create") -> {
                         try {

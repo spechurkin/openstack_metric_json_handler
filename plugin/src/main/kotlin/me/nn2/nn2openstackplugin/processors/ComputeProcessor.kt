@@ -8,7 +8,6 @@ import me.nn2.nn2openstackplugin.support.MessageHelper
 import org.apache.logging.log4j.LogManager
 import org.opensearch.rest.RestChannel
 import org.opensearch.rest.RestRequest
-import java.util.*
 
 class ComputeProcessor() : IProcessor {
     private val logger = LogManager.getLogger(ComputeProcessor::class.java)
@@ -21,7 +20,7 @@ class ComputeProcessor() : IProcessor {
             RestRequest.Method.GET -> {
                 try {
                     var dto: Set<Any> = setOf()
-                    with(request.path()?.lowercase(Locale.getDefault())!!) {
+                    with(request.path()) {
                         when {
                             contains("servers") -> dto = compute.getServers().toSet()
                             contains("images") -> dto = compute.getImages().toSet()
@@ -43,7 +42,7 @@ class ComputeProcessor() : IProcessor {
                 }
             }
 
-            RestRequest.Method.POST -> with(request.path().lowercase(Locale.getDefault())) {
+            RestRequest.Method.POST -> with(request.path()) {
                 when {
                     contains("servers/create") -> {
                         try {

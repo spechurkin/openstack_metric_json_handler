@@ -20,9 +20,10 @@ class StorageProcessor() : IProcessor {
             RestRequest.Method.GET ->
                 try {
                     var dto: Set<Any> = setOf()
-                    with(request.path()?.lowercase(Locale.getDefault())!!) {
+                    with(request.path()) {
                         when {
                             contains("volumes") -> dto = storage.getVolumes().toSet()
+                            contains("volumeTypes") -> dto = storage.getVolumes().toSet()
                             contains("backups") -> dto = storage.getBackups().toSet()
                             contains("snapshots") -> dto = storage.getSnapshots().toSet()
                             contains("services") -> dto = storage.getServices().toSet()
@@ -35,7 +36,7 @@ class StorageProcessor() : IProcessor {
                     MessageHelper.sendExceptionMessage(channel, e)
                 }
 
-            RestRequest.Method.POST -> with(request.path().lowercase(Locale.getDefault())) {
+            RestRequest.Method.POST -> with(request.path()) {
                 when {
                     contains("volumes/create") -> {
                         try {
