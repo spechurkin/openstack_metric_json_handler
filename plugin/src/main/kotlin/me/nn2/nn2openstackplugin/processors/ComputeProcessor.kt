@@ -117,7 +117,7 @@ class ComputeProcessor() : IProcessor {
                                 .apply {
                                     body["ephemeralGb"]?.let { ephemeralGb(it as Int) }
                                     body["swapMb"]?.let { swapMb(it as Int) }
-                                    body["rxtxFactor"]?.let { rxtxFactor(it as Int) }
+                                    body["rxtxFactor"]?.let { rxtxFactor(it as Double) }
                                     body["isPublic"]?.let { isPublic(it as Boolean) }
                                 }.build()
 

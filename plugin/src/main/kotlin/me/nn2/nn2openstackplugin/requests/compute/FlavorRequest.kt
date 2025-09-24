@@ -26,7 +26,7 @@ class FlavorRequest(
         fun ephemeralGb(ephemeralGb: Int) = apply { this.ephemeralGb = ephemeralGb }
         fun swapMb(swapMb: Int) = apply { this.swapMb = swapMb }
         fun vcpus(vcpus: Int) = apply { this.vcpus = vcpus }
-        fun rxtxFactor(rxtxFactor: Int) = apply { this.rxtxFactor = rxtxFactor.toFloat() }
+        fun rxtxFactor(rxtxFactor: Double) = apply { this.rxtxFactor = rxtxFactor.toFloat() }
         fun isPublic(isPublic: Boolean) = apply { this.isPublic = isPublic }
 
         fun build(): FlavorRequest {
