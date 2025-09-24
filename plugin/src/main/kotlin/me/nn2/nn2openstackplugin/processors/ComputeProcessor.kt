@@ -1,7 +1,9 @@
 package me.nn2.nn2openstackplugin.processors
 
 import me.nn2.libs.OpenStackWrapper
-import me.nn2.nn2openstackplugin.requests.ServerRequest
+import me.nn2.nn2openstackplugin.requests.compute.FlavorRequest
+import me.nn2.nn2openstackplugin.requests.compute.ImageRequest
+import me.nn2.nn2openstackplugin.requests.compute.ServerRequest
 import me.nn2.nn2openstackplugin.support.MessageHelper
 import org.apache.logging.log4j.LogManager
 import org.opensearch.rest.RestChannel
@@ -44,48 +46,100 @@ class ComputeProcessor() : IProcessor {
                 }
             }
 
-            RestRequest.Method.POST ->
-                with(request.path().lowercase(Locale.getDefault())) {
-                    when {
-                        contains("servers/create") -> {
-                            try {
-                                val serverRequestBuilder = ServerRequest.Builder()
-                                    .serverName(request.param("serverName"))
-                                    .imageName(request.param("imageName"))
-                                    .flavorName(request.param("flavorName"))
+            RestRequest.Method.POST -> with(request.path().lowercase(Locale.getDefault())) {
+                when {
+                    contains("servers/create") -> {
+                        try {
+                            val body: Map<String, Any> = request.contentParser().map()
 
-                                if (request.params().containsKey("adminPass")) {
-                                    serverRequestBuilder.adminPass(request.param("adminPass"))
-                                }
-
-                                if (request.params().containsKey("keyPair")) {
-                                    serverRequestBuilder.keyPair(request.param("keyPair"))
-                                }
-
-                                if (request.params().containsKey("networkNames")) {
-                                    serverRequestBuilder.networkNames(request.param("networkNames").split(","))
-                                } else {
-                                    serverRequestBuilder.networkNames(emptyList())
-                                }
-
-                                val serverRequest = serverRequestBuilder.build()
-
-                                compute.createServer(
-                                    serverName = serverRequest.serverName,
-                                    imageName = serverRequest.imageName,
-                                    flavorName = serverRequest.flavorName,
-                                    adminPass = serverRequest.adminPass,
-                                    keyPair = serverRequest.keyPair,
-                                    networkNames = serverRequest.networkNames
+                            val serverRequest = ServerRequest.Builder()
+                                .serverName(body["serverName"].toString())
+                                .imageName(body["imageName"].toString())
+                                .flavorName(body["flavorName"].toString())
+                                .networkNames(
+                                    body["networkNames"].toString()
+                                        .split(",").toList()
                                 )
-                            } catch (e: Exception) {
-                                logger.error(e.message, e)
-                                MessageHelper.sendExceptionMessage(channel, e)
-                            }
+                                .adminPass(body["adminPass"].toString())
+                                .apply {
+                                    body["keyPair"]?.let { keyPair(it.toString()) }
+                                }.build()
+
+                            compute.createServer(
+                                serverName = serverRequest.serverName,
+                                imageName = serverRequest.imageName,
+                                flavorName = serverRequest.flavorName,
+                                adminPass = serverRequest.adminPass,
+                                keyPair = serverRequest.keyPair,
+                                networkNames = serverRequest.networkNames
+                            )
+                        } catch (e: Exception) {
+                            logger.error(e.message, e)
+                            MessageHelper.sendExceptionMessage(channel, e)
                         }
-                        else -> logger.warn("Bad request!")
                     }
+
+                    contains("images/create") -> {
+                        try {
+                            val body: Map<String, Any> = request.contentParser().map()
+
+                            val imageRequest = ImageRequest.Builder()
+                                .imageName(body["imageName"].toString())
+                                .visibility(body["visibility"].toString())
+                                .urlToImg(body["urlToImg"].toString())
+                                .apply {
+                                    body["minRamGb"]?.let { minRamGb(it as Int) }
+                                    body["minDiskGb"]?.let { minDiskGb(it as Int) }
+                                }.build()
+
+                            compute.createImage(
+                                imageName = imageRequest.imageName,
+                                minRamGb = imageRequest.minRamGb,
+                                minDiskGb = imageRequest.minDiskGb,
+                                visibility = imageRequest.visibility,
+                                urlToImg = imageRequest.urlToImg
+                            )
+                        } catch (e: Exception) {
+                            logger.error(e.message, e)
+                            MessageHelper.sendExceptionMessage(channel, e)
+                        }
+                    }
+
+                    contains("flavors/create") -> {
+                        try {
+                            val body: Map<String, Any> = request.contentParser().map()
+
+                            val flavorRequest = FlavorRequest.Builder()
+                                .flavorName(body["flavorName"].toString())
+                                .ramMb(body["ramMb"] as Int)
+                                .diskGb(body["diskGb"] as Int)
+                                .vcpus(body["vpus"] as Int)
+                                .apply {
+                                    body["ephemeralGb"]?.let { ephemeralGb(it as Int) }
+                                    body["swapMb"]?.let { swapMb(it as Int) }
+                                    body["rxtxFactor"]?.let { rxtxFactor(it as Int) }
+                                    body["isPublic"]?.let { isPublic(it as Boolean) }
+                                }.build()
+
+                            compute.createFlavor(
+                                flavorName = flavorRequest.flavorName,
+                                ramMb = flavorRequest.ramMb,
+                                diskGb = flavorRequest.diskGb,
+                                ephemeralGb = flavorRequest.ephemeralGb,
+                                swapMb = flavorRequest.swapMb,
+                                vcpus = flavorRequest.vcpus,
+                                rxtxFactor = flavorRequest.rxtxFactor,
+                                isPublic = flavorRequest.isPublic
+                            )
+                        } catch (e: Exception) {
+                            logger.error(e.message, e)
+                            MessageHelper.sendExceptionMessage(channel, e)
+                        }
+                    }
+
+                    else -> logger.warn("Bad request!")
                 }
+            }
 
             RestRequest.Method.PUT -> TODO()
             RestRequest.Method.DELETE -> TODO()
