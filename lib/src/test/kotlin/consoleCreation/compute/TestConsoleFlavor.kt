@@ -24,5 +24,5 @@ fun removeFlavor(flavorId: String?) {
 }
 
 fun getFlavorIdByName(flavorName: String): String? {
-    return os.compute().flavors().list(mapOf("name" to flavorName)).firstOrNull()?.id
+    return os.compute().flavors().list().find { it.name == flavorName }?.id
 }

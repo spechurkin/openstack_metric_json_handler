@@ -52,5 +52,5 @@ fun removeImage(imageId: String) {
 }
 
 fun getImageIdByName(imageName: String): String? {
-    return os.imagesV2().list(mapOf("name" to imageName)).firstOrNull()?.id
+    return os.imagesV2().list().find { it.name == imageName }?.id
 }

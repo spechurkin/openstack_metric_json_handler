@@ -53,5 +53,5 @@ fun deleteRule(secRuleId: String) {
 }
 
 fun getSecGroupIdByName(secGroupName: String): String? {
-    return os.networking().securitygroup().list(mapOf("name" to secGroupName)).firstOrNull()?.id
+    return os.networking().securitygroup().list().find { it.name == secGroupName }?.id
 }

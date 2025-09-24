@@ -38,5 +38,5 @@ fun deleteNetwork(networkId: String?) {
 }
 
 fun getNetworkIdByName(networkName: String): String? {
-    return os.networking().network().list(mapOf("name" to networkName)).firstOrNull()?.id
+    return os.networking().network().list().find { it.name == networkName }?.id
 }

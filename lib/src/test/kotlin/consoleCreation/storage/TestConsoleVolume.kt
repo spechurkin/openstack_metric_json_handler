@@ -56,5 +56,5 @@ fun removeVolume(volumeName: String) {
 }
 
 fun getVolumeIdByName(volumeName: String): String? {
-    return os.blockStorage().volumes().list(mapOf("name" to volumeName)).firstOrNull()?.id
+    return os.blockStorage().volumes().list().find { it.name == volumeName }?.id
 }

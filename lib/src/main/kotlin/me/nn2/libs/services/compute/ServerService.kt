@@ -20,24 +20,25 @@ class ServerService(override val client: OSClientV3) : IMetricService {
         serverName: String,
         imageName: String,
         flavorName: String,
-        adminPass: String? = "admin",
+        adminPass: String = "admin",
         keyPair: String? = null,
-        networkNames: List<String>? = emptyList()
-    ): ServerData {
+        networkNames: List<String>
+    ) {
         val serverCreate = Builders.server()
             .name(serverName)
             .image(imageService.getImageIdByName(imageName))
             .flavor(flavorService.getFlavorIdByName(flavorName))
+            .networks(networkNames.map { networkService.getNetworkIdByName(it) })
             .addAdminPass(adminPass)
-            .keypairName(keyPair)
-            .networks(networkNames?.map { networkService.getNetworkIdByName(it) })
-            .build()
+            .apply {
+                keyPair?.let { keypairName(it) }
+            }.build()
 
-        return convertToDto(client.compute().servers().boot(serverCreate))
+        client.compute().servers().boot(serverCreate)
     }
 
     fun getServerIdByName(serverName: String): String? {
-        return client.compute().servers().list(mapOf("name" to serverName)).firstOrNull()?.id
+        return client.compute().servers().list().find { it.name == serverName }?.id
     }
 
     fun convertToDto(server: Server): ServerData {

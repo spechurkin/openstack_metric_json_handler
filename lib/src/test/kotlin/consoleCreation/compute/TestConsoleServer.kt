@@ -11,6 +11,7 @@ import org.openstack4j.model.compute.ServerUpdateOptions
 import org.openstack4j.model.compute.actions.BackupOptions
 import org.openstack4j.openstack.OSFactory
 import proj.work.*
+import proj.work.consoleCreation.network.getNetworkIdByName
 
 val os: OSClientV3 = OSFactory.builderV3()
     .endpoint(identityUrl)
@@ -23,7 +24,7 @@ val os: OSClientV3 = OSFactory.builderV3()
     .authenticate()
 
 suspend fun main() {
-    createServer("Klyde", "Ubuntu Server 24.10", "TestFlavor", keyPair = "Kyle", networkIds = emptyList())
+    createServer("Klyde", "Ubuntu Server 24.10", "DefaultFlavor", keyPair = "Kyle", networkNames = listOf("MY_NETWORK", "MY_NETWORK2"))
 //    createServer()
 //    attachVolume(getServerIdByName("DefaultServer"), getVolumeIdByName("DefaultVolume"), "/dev/vda")
 //    resizeServer(getServerIdByName("DefaultServer"), getFlavorIdByName("DefaultFlavor"))
@@ -31,6 +32,7 @@ suspend fun main() {
 //    snapshotServer(getServerIdByName("DefaultServer"), "DefaultSnapshot")
 //    updateServer(getServerIdByName("DefaultServer"), "Kyle")
 //    rebootServer(getServerIdByName("DefaultServer"), RebootType.HARD)
+//    println(getFlavorIdByName("DefaultFlavor"))
 }
 
 fun createServer(
@@ -39,23 +41,24 @@ fun createServer(
     flavorName: String,
     adminPass: String = "admin",
     keyPair: String? = null,
-    networkIds: List<String>? = null
+    networkNames: List<String>
 ) {
     val serverCreate = Builders.server()
         .name(serverName)
         .image(getImageIdByName(imageName))
         .flavor(getFlavorIdByName(flavorName))
+        .networks(networkNames.map { name -> getNetworkIdByName(name) })
         .addAdminPass(adminPass)
+        .apply {
+            keyPair?.let { keypairName(it) }
+        }.build()
 
-    if (keyPair != null) {
-        serverCreate.keypairName(keyPair)
+    for (network in networkNames) {
+        println(network)
+        println(getNetworkIdByName(network))
     }
 
-    if (networkIds != null) {
-        serverCreate.networks(networkIds)
-    }
-
-    os.compute().servers().boot(serverCreate.build())
+    os.compute().servers().boot(serverCreate)
 }
 
 fun updateServer(serverId: String?, newName: String, ip4Address: String = "", ip6Address: String = "") {
@@ -128,5 +131,5 @@ fun deleteServer(serverId: String?) {
 }
 
 fun getServerIdByName(serverName: String): String? {
-    return os.compute().servers().list(mapOf("name" to serverName)).firstOrNull()?.id
+    return os.compute().servers().list().find { it.name == serverName }?.id
 }
