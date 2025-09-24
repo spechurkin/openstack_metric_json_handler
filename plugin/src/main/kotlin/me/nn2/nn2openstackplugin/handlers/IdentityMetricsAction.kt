@@ -26,7 +26,6 @@ class IdentityMetricsAction(private val wrapper: OpenStackWrapper) : BaseRestHan
         p0: RestRequest?,
         p1: NodeClient?
     ): RestChannelConsumer? {
-        val metric = p0?.path()?.split("/".toRegex())?.last()
         val processor = IdentityProcessor()
 
         return try {

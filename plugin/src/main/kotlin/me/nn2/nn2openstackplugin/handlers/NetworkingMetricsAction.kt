@@ -30,7 +30,6 @@ class NetworkingMetricsAction(private val wrapper: OpenStackWrapper) : BaseRestH
         p0: RestRequest?,
         p1: NodeClient?
     ): RestChannelConsumer? {
-        val metric = p0?.path()?.split("/".toRegex())?.last()
         val processor = NetworkProcessor()
 
         return try {
