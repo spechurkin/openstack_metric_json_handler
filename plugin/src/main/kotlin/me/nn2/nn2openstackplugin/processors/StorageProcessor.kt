@@ -23,7 +23,7 @@ class StorageProcessor() : IProcessor {
                     with(request.path()) {
                         when {
                             contains("volumes") -> dto = storage.getVolumes().toSet()
-                            contains("volumeTypes") -> dto = storage.getVolumes().toSet()
+                            contains("volumeTypes") -> dto = storage.getVolumeTypes().toSet()
                             contains("backups") -> dto = storage.getBackups().toSet()
                             contains("snapshots") -> dto = storage.getSnapshots().toSet()
                             contains("services") -> dto = storage.getServices().toSet()

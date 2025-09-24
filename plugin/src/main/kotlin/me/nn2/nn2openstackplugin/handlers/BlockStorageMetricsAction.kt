@@ -18,6 +18,8 @@ class BlockStorageMetricsAction(private val wrapper: OpenStackWrapper) : BaseRes
             RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.STORAGE_PATH}/volumes"),
             RestHandler.Route(RestRequest.Method.POST, "${GlobalSettings.STORAGE_PATH}/volumes/create"),
 
+            RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.STORAGE_PATH}/volumeTypes"),
+
             RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.STORAGE_PATH}/backups"),
 
             RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.STORAGE_PATH}/snapshots"),

@@ -1,6 +1,7 @@
 package me.nn2.libs.services.storage
 
 import me.nn2.libs.data.storage.VolumeData
+import me.nn2.libs.data.storage.VolumeTypeData
 import me.nn2.libs.services.IMetricService
 import me.nn2.libs.services.compute.ImageService
 import org.openstack4j.api.Builders
@@ -10,7 +11,7 @@ class VolumeService(override val client: OSClient.OSClientV3) : IMetricService {
     val imageService = ImageService(client)
 
     fun getVolume(): List<VolumeData> {
-        return convertToDto()
+        return convertVolumeToDto()
     }
 
     fun createVolume(
@@ -38,18 +39,32 @@ class VolumeService(override val client: OSClient.OSClientV3) : IMetricService {
         return client.blockStorage().volumes().list().find { it.name == volumeName }?.id
     }
 
-    private fun convertToDto(): List<VolumeData> {
-        return client.blockStorage().volumes().list().map { volume ->
+    fun getVoluteTypes(): List<VolumeTypeData> {
+        return convertVolumeTypeToDto()
+    }
+
+    private fun convertVolumeTypeToDto(): List<VolumeTypeData> {
+        return client.blockStorage().volumes().listVolumeTypes().map {
+            VolumeTypeData(
+                id = it.id,
+                name = it.name,
+                specs = it.extraSpecs
+            )
+        }
+    }
+
+    private fun convertVolumeToDto(): List<VolumeData> {
+        return client.blockStorage().volumes().list().map {
             VolumeData(
-                id = volume.id,
-                name = volume.name,
-                description = volume.description,
-                size = volume.size,
-                status = volume.status,
-                metadata = volume.metaData.map { (key, value) ->
+                id = it.id,
+                name = it.name,
+                description = it.description,
+                size = it.size,
+                status = it.status,
+                metadata = it.metaData.map { (key, value) ->
                     StringBuilder().append(key).append("=").append(value).toString()
                 },
-                created = volume.created
+                created = it.created
             )
         }
     }

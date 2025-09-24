@@ -2,6 +2,7 @@ package me.nn2.libs.wrappers
 
 import me.nn2.libs.data.storage.SnapshotData
 import me.nn2.libs.data.storage.VolumeData
+import me.nn2.libs.data.storage.VolumeTypeData
 import me.nn2.libs.services.storage.SnapshotService
 import me.nn2.libs.services.storage.VolumeService
 import org.openstack4j.api.OSClient.OSClientV3
@@ -21,6 +22,10 @@ class BlockStorageWrapper(client: OSClientV3) : AWrapper(client) {
             volumeType = volumeType,
             imageName = imageName
         )
+    }
+
+    fun getVolumeTypes(): List<VolumeTypeData> {
+        return VolumeService(client).getVoluteTypes()
     }
 
     fun getBackups(): List<VolumeBackup> {
