@@ -27,15 +27,11 @@ class ComputeMetricsAction(private val wrapper: OpenStackWrapper) :
 
             RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.COMPUTE_PATH}/keypairs"),
             RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.COMPUTE_PATH}/services"),
-            RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.COMPUTE_PATH}/floatingIps"),
-            RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.COMPUTE_PATH}/hosts"),
             RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.COMPUTE_PATH}/zones"),
             RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.COMPUTE_PATH}/migrations"),
             RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.COMPUTE_PATH}/hypervisors"),
             RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.COMPUTE_PATH}/hostAggregates"),
-            RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.COMPUTE_PATH}/serverGroups"),
-            RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.COMPUTE_PATH}/securityGroups"),
-            RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.COMPUTE_PATH}/securityRules")
+            RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.COMPUTE_PATH}/serverGroups")
         )
     }
 

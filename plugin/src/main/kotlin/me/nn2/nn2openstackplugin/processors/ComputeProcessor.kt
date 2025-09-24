@@ -28,15 +28,11 @@ class ComputeProcessor() : IProcessor {
                             contains("flavors") -> dto = compute.getFlavors().toSet()
                             contains("keypairs") -> dto = compute.getKeypairs().toSet()
                             contains("services") -> dto = compute.getServices().toSet()
-                            contains("floatingIps") -> dto = compute.getFloatingIps().toSet()
-                            contains("hosts") -> dto = compute.getHosts().toSet()
                             contains("zones") -> dto = compute.getZones().toSet()
                             contains("migrations") -> dto = compute.getMigrations().toSet()
                             contains("hypervisors") -> dto = compute.getHypervisors().toSet()
                             contains("hostAggregates") -> dto = compute.getHostAggregates().toSet()
                             contains("serverGroups") -> dto = compute.getServerGroups().toSet()
-                            contains("securityGroups") -> dto = compute.getSecurityGroups().toSet()
-                            contains("securityRules") -> dto = compute.getSecurityRules().toSet()
                             else -> logger.warn("Bad request!")
                         }
                     }
