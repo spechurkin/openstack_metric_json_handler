@@ -51,6 +51,7 @@ class NetworkService(override val client: OSClient.OSClientV3) : IMetricService 
             status = network.status.toString(),
             external = network.isRouterExternal,
             shared = network.isShared,
+            tenantId = network.tenantId,
             admin = network.isAdminStateUp,
             mtu = network.mtu,
             subnets = network.subnets,

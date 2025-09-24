@@ -6,6 +6,7 @@ data class NetworkData(
     val status: String,
     val external: Boolean,
     val shared: Boolean,
+    val tenantId: String,
     val admin: Boolean,
     val mtu: Int,
     val subnets: MutableList<String>,
