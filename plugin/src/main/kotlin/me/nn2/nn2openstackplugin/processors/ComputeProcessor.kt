@@ -113,7 +113,7 @@ class ComputeProcessor() : IProcessor {
                                 .flavorName(body["flavorName"].toString())
                                 .ramMb(body["ramMb"] as Int)
                                 .diskGb(body["diskGb"] as Int)
-                                .vcpus(body["vpus"] as Int)
+                                .vcpus(body["vcpus"] as Int)
                                 .apply {
                                     body["ephemeralGb"]?.let { ephemeralGb(it as Int) }
                                     body["swapMb"]?.let { swapMb(it as Int) }
