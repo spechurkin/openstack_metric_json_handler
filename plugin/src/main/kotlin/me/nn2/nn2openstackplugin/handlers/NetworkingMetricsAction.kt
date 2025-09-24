@@ -16,7 +16,11 @@ class NetworkingMetricsAction(private val wrapper: OpenStackWrapper) : BaseRestH
     override fun routes(): List<RestHandler.Route?>? {
         return listOf(
             RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.NETWORKING_PATH}/networks"),
+            RestHandler.Route(RestRequest.Method.POST, "${GlobalSettings.NETWORKING_PATH}/networks/create"),
+
             RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.NETWORKING_PATH}/subnets"),
+            RestHandler.Route(RestRequest.Method.POST, "${GlobalSettings.NETWORKING_PATH}/subnets/create"),
+
             RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.NETWORKING_PATH}/ports"),
             RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.NETWORKING_PATH}/routers"),
             RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.NETWORKING_PATH}/securityGroups"),
