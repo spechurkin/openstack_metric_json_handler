@@ -10,9 +10,7 @@ class SnapshotService(override val client: OSClient.OSClientV3) : IMetricService
     val volumeService = VolumeService(client)
 
     fun getSnapshots(): List<SnapshotData> {
-        return client.blockStorage().snapshots().list().map {
-            convertSnapshotToDto(it)
-        }
+        return convertSnapshotToDto()
     }
 
     fun createSnapshot(snapshotName: String?, description: String?, volumeName: String) {
@@ -26,7 +24,7 @@ class SnapshotService(override val client: OSClient.OSClientV3) : IMetricService
         client.blockStorage().snapshots().create(volumeSnapshot)
     }
 
-    private fun convertSnapshotToDto(snapshot: VolumeSnapshot): SnapshotData {
+    fun convertSnapshotToDto(snapshot: VolumeSnapshot): SnapshotData {
         return SnapshotData(
             id = snapshot.id,
             name = snapshot.name,
@@ -36,5 +34,11 @@ class SnapshotService(override val client: OSClient.OSClientV3) : IMetricService
             size = snapshot.size,
             createdAt = snapshot.created,
         )
+    }
+
+    private fun convertSnapshotToDto(): List<SnapshotData> {
+        return client.blockStorage().snapshots().list().map {
+            convertSnapshotToDto(it)
+        }
     }
 }
