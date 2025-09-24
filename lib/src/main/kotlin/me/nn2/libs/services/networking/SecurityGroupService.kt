@@ -9,6 +9,10 @@ class SecurityGroupService(override val client: OSClient.OSClientV3) : IMetricSe
         return convertToDto()
     }
 
+    fun getSecurityGroupIdByName(securityGroup: String): String {
+        return client.networking().securitygroup().list().find { it.name == securityGroup }!!.id
+    }
+
     private fun convertToDto(): List<SecurityGroupData> {
         return client.networking().securitygroup().list().map {
             SecurityGroupData(
