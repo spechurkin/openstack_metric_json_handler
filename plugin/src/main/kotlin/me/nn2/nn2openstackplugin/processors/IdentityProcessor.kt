@@ -13,6 +13,7 @@ class IdentityProcessor() : IProcessor {
     @Throws
     override fun process(wrapper: OpenStackWrapper, channel: RestChannel, request: RestRequest?) {
         val identity = wrapper.identity()
+
         try {
             var dto: Set<Any> = setOf()
             with(request?.path()?.lowercase(Locale.getDefault())!!) {

@@ -16,6 +16,7 @@ class ComputeProcessor() : IProcessor {
     @Throws
     override fun process(wrapper: OpenStackWrapper, channel: RestChannel, request: RestRequest?) {
         val compute = wrapper.compute()
+
         when (request?.method()) {
             RestRequest.Method.GET -> {
                 try {
