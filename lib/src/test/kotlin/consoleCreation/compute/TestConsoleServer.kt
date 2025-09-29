@@ -24,7 +24,13 @@ val os: OSClientV3 = OSFactory.builderV3()
     .authenticate()
 
 suspend fun main() {
-    createServer("Klyde", "Ubuntu Server 24.10", "DefaultFlavor", keyPair = "Kyle", networkNames = listOf("MY_NETWORK", "MY_NETWORK2"))
+    createServer(
+        "Klyde",
+        "Ubuntu Server 24.10",
+        "DefaultFlavor",
+        keyPair = "Kyle",
+        networkNames = listOf("MY_NETWORK", "MY_NETWORK2")
+    )
 //    createServer()
 //    attachVolume(getServerIdByName("DefaultServer"), getVolumeIdByName("DefaultVolume"), "/dev/vda")
 //    resizeServer(getServerIdByName("DefaultServer"), getFlavorIdByName("DefaultFlavor"))

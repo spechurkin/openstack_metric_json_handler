@@ -25,11 +25,11 @@ fun main() {
 //
 //    println(wrapper.identity().getUsers())
 //    println(wrapper.identity().getGroups())
-//    println(wrapper.identity().getProjects())
+    println(wrapper.identity().getProjects())
 //    println(wrapper.identity().getDomains())
 //
 //    println(wrapper.blockStorage().getVolumes())
-    println(wrapper.blockStorage().getBackups())
+//    println(wrapper.blockStorage().getBackups())
 //    println(wrapper.blockStorage().getSnapshots())
 //    println(wrapper.blockStorage().getServices())
 //
@@ -37,7 +37,7 @@ fun main() {
 //    println(wrapper.networking().getSubnets())
 //    println(wrapper.networking().getRouters())
 //    println(wrapper.networking().getPorts())
-//    println(wrapper.networking().getQuotas())
 //    println(wrapper.networking().getFloatingIps())
 //    println(wrapper.networking().getSecurityGroups())
+//    println(wrapper.networking().getSecurityGroupRules())
 }

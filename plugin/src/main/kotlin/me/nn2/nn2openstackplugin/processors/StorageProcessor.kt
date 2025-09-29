@@ -7,7 +7,6 @@ import me.nn2.nn2openstackplugin.support.MessageHelper
 import org.apache.logging.log4j.LogManager
 import org.opensearch.rest.RestChannel
 import org.opensearch.rest.RestRequest
-import java.util.*
 
 class StorageProcessor() : IProcessor {
     private val logger = LogManager.getLogger(StorageProcessor::class.java)

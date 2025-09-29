@@ -6,6 +6,5 @@ data class ProjectData(
     val description: String?,
     val domainId: String?,
     val enabled: Boolean?,
-    val parentId: String?,
-    val parents: String?,
+    val parentId: String?
 )

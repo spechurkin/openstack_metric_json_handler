@@ -71,8 +71,7 @@ class IdentityService(override val client: OSClient.OSClientV3) : IMetricService
             description = project.description,
             domainId = project.domainId,
             enabled = project.isEnabled,
-            parentId = project.parentId,
-            parents = project.parents
+            parentId = project.parentId
         )
     }
 

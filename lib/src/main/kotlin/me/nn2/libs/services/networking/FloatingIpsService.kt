@@ -6,6 +6,7 @@ import org.openstack4j.api.OSClient
 import org.openstack4j.model.network.NetFloatingIP
 
 class FloatingIpsService(override val client: OSClient.OSClientV3) : IMetricService {
+    private val routerService = RouterService(client)
 
     fun getFloatingIps(): List<FloatingIpData> {
         return convertToDto()
@@ -15,7 +16,11 @@ class FloatingIpsService(override val client: OSClient.OSClientV3) : IMetricServ
         return FloatingIpData(
             id = floatingIp.id,
             tenantId = floatingIp.tenantId,
-            router = client.networking().router().get(floatingIp.routerId).name,
+            router = try {
+                client.networking().router().get(floatingIp.routerId).name
+            } catch (_: Exception) {
+                ""
+            },
             fixedIpAddress = floatingIp.fixedIpAddress,
             floatingNetworkId = floatingIp.floatingNetworkId
         )

@@ -1,20 +1,9 @@
 package me.nn2.libs.wrappers
 
-import me.nn2.libs.data.compute.FlavorData
-import me.nn2.libs.data.compute.ImageData
-import me.nn2.libs.data.compute.ServerData
-import me.nn2.libs.data.compute.ServerGroupData
-import me.nn2.libs.services.compute.FlavorService
-import me.nn2.libs.services.compute.ImageService
-import me.nn2.libs.services.compute.ServerGroupService
-import me.nn2.libs.services.compute.ServerService
+import me.nn2.libs.data.ServiceData
+import me.nn2.libs.data.compute.*
+import me.nn2.libs.services.compute.*
 import org.openstack4j.api.OSClient.OSClientV3
-import org.openstack4j.model.compute.HostAggregate
-import org.openstack4j.model.compute.Keypair
-import org.openstack4j.model.compute.ext.AvailabilityZone
-import org.openstack4j.model.compute.ext.Hypervisor
-import org.openstack4j.model.compute.ext.Migration
-import org.openstack4j.model.compute.ext.Service
 import java.net.URI
 
 class ComputeWrapper(client: OSClientV3) : AWrapper(client) {
@@ -86,28 +75,28 @@ class ComputeWrapper(client: OSClientV3) : AWrapper(client) {
         )
     }
 
-    fun getKeypairs(): List<Keypair> {
-        return client.compute().keypairs().list()
+    fun getKeypairs(): List<KeypairData> {
+        return KeypairService(client).getKeypairs()
     }
 
-    fun getServices(): List<Service> {
-        return client.compute().services().list()
+    fun getServices(): List<ServiceData> {
+        return ServiceService(client).getServices()
     }
 
-    fun getZones(): List<AvailabilityZone> {
-        return client.compute().zones().list()
+    fun getZones(): List<ZoneData> {
+        return ZoneService(client).getZones()
     }
 
-    fun getMigrations(): List<Migration> {
-        return client.compute().migrations().list()
+    fun getMigrations(): List<MigrationData> {
+        return MigrationService(client).getMigrations()
     }
 
-    fun getHypervisors(): List<Hypervisor> {
-        return client.compute().hypervisors().list()
+    fun getHypervisors(): List<HypervisorData> {
+        return HypervisorService(client).getHypervisors()
     }
 
-    fun getHostAggregates(): List<HostAggregate> {
-        return client.compute().hostAggregates().list()
+    fun getHostAggregates(): List<HostAggregateData> {
+        return HostAggregateService(client).getHostAggregate()
     }
 
     fun getServerGroups(): List<ServerGroupData> {

@@ -25,7 +25,6 @@ class NetworkingMetricsAction(private val wrapper: OpenStackWrapper) : BaseRestH
             RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.NETWORKING_PATH}/routers"),
             RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.NETWORKING_PATH}/securityGroups"),
             RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.NETWORKING_PATH}/securityRules"),
-            RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.NETWORKING_PATH}/quotas"),
             RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.NETWORKING_PATH}/floatingIps")
         )
     }

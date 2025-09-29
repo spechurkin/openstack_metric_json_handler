@@ -3,7 +3,10 @@ package me.nn2.libs.wrappers
 import me.nn2.libs.data.networking.*
 import me.nn2.libs.services.networking.*
 import org.openstack4j.api.OSClient.OSClientV3
-import org.openstack4j.model.network.*
+import org.openstack4j.model.network.IPVersionType
+import org.openstack4j.model.network.Ipv6AddressMode
+import org.openstack4j.model.network.Ipv6RaMode
+import org.openstack4j.model.network.NetworkType
 
 class NetworkingWrapper(client: OSClientV3) : AWrapper(client) {
     fun getNetworks(): List<NetworkData> {
@@ -66,8 +69,8 @@ class NetworkingWrapper(client: OSClientV3) : AWrapper(client) {
         )
     }
 
-    fun getPorts(): List<Port> {
-        return client.networking().port().list()
+    fun getPorts(): List<PortData> {
+        return PortService(client).getPorts()
     }
 
     fun getRouters(): List<RouterData> {
@@ -80,10 +83,6 @@ class NetworkingWrapper(client: OSClientV3) : AWrapper(client) {
 
     fun getSecurityGroupRules(): List<SecurityRuleData> {
         return SecurityRuleService(client).getSecurityRules()
-    }
-
-    fun getQuotas(): List<NetQuota> {
-        return client.networking().quotas().get()
     }
 
     fun getFloatingIps(): List<FloatingIpData> {

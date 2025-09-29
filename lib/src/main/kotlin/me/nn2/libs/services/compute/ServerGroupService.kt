@@ -11,18 +11,18 @@ class ServerGroupService(override val client: OSClientV3) : IMetricService {
         return convertToDto()
     }
 
-    private fun convertToDto(): List<ServerGroupData> {
-        return client.compute().serverGroups().list().map {
-            computeToDto(it)
-        }
-    }
-
-    private fun computeToDto(serverGroup: ServerGroup): ServerGroupData {
+    fun computeToDto(serverGroup: ServerGroup): ServerGroupData {
         return ServerGroupData(
             id = serverGroup.id,
             name = serverGroup.name,
             members = serverGroup.members.map { client.compute().servers().get(it).name },
             policy = serverGroup.policies[0]
         )
+    }
+
+    private fun convertToDto(): List<ServerGroupData> {
+        return client.compute().serverGroups().list().map {
+            computeToDto(it)
+        }
     }
 }

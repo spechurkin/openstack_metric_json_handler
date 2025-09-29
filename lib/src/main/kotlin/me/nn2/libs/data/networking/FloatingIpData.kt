@@ -4,6 +4,6 @@ data class FloatingIpData(
     val id: String,
     val tenantId: String,
     val router: String,
-    val fixedIpAddress: String,
-    val floatingNetworkId: String,
+    val fixedIpAddress: String?,
+    val floatingNetworkId: String?,
 )

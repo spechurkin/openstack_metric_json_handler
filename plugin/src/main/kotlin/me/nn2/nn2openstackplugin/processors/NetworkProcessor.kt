@@ -7,7 +7,6 @@ import me.nn2.nn2openstackplugin.support.MessageHelper
 import org.apache.logging.log4j.LogManager
 import org.opensearch.rest.RestChannel
 import org.opensearch.rest.RestRequest
-import java.util.*
 
 class NetworkProcessor() : IProcessor {
     private val logger = LogManager.getLogger(NetworkProcessor::class.java)
@@ -28,7 +27,6 @@ class NetworkProcessor() : IProcessor {
                             contains("routers") -> dto = networking.getRouters().toSet()
                             contains("securityGroups") -> dto = networking.getSecurityGroups().toSet()
                             contains("securityRules") -> dto = networking.getSecurityGroupRules().toSet()
-                            contains("quotas") -> dto = networking.getQuotas().toSet()
                             contains("floatingIps") -> dto = networking.getFloatingIps().toSet()
                             else -> logger.warn("Bad request!")
                         }

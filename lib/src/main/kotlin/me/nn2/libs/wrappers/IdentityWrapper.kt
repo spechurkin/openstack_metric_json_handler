@@ -13,7 +13,7 @@ class IdentityWrapper(client: OSClientV3) : AWrapper(client) {
     }
 
     fun getGroups(): List<GroupData> {
-        return IdentityWrapper(client).getGroups()
+        return IdentityService(client).getGroups()
     }
 
     fun getProjects(): List<ProjectData> {

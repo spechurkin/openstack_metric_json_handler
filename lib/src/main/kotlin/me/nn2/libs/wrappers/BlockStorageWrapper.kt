@@ -1,14 +1,15 @@
 package me.nn2.libs.wrappers
 
+import me.nn2.libs.data.ServiceData
 import me.nn2.libs.data.storage.BackupData
 import me.nn2.libs.data.storage.SnapshotData
 import me.nn2.libs.data.storage.VolumeData
 import me.nn2.libs.data.storage.VolumeTypeData
 import me.nn2.libs.services.storage.BackupService
+import me.nn2.libs.services.storage.ServiceService
 import me.nn2.libs.services.storage.SnapshotService
 import me.nn2.libs.services.storage.VolumeService
 import org.openstack4j.api.OSClient.OSClientV3
-import org.openstack4j.model.storage.block.ext.Service
 
 class BlockStorageWrapper(client: OSClientV3) : AWrapper(client) {
     fun getVolumes(): List<VolumeData> {
@@ -45,7 +46,7 @@ class BlockStorageWrapper(client: OSClientV3) : AWrapper(client) {
         )
     }
 
-    fun getServices(): List<Service> {
-        return client.blockStorage().services().list()
+    fun getServices(): List<ServiceData> {
+        return ServiceService(client).getServices()
     }
 }
