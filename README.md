@@ -113,13 +113,13 @@ loaded plugin [nn2openstackplugin]
 Доступны следующие группы:
 
 * [`Compute`](#раздел-compute)
-* [`Block Storage`](#раздел-namespace)
-* [`Networking`](#раздел-node)
-* [`Identity`](#раздел-pod)
+* [`Block Storage`](#раздел-block-storage)
+* [`Networking`](#раздел-networking)
+* [`Identity`](#раздел-identity)
 
 ---
 > **Внимание!**
-> Строки имен, команд должны быть экранированы
+> Строки имён, команд должны быть экранированы
 
 # Раздел `Compute`
 
@@ -272,6 +272,137 @@ GET _nn2/openstack/compute/serverGroups
 - ```members``` - названия серверов-участников группы
 - ```policies``` - политика группы
 
+___
+
+## Подраздел `Keypair`
+
+### _nn2/openstack/compute/keypairs
+
+#### Получение списка ключевых пар
+
+_Пример запроса:_
+
+```http request
+GET _nn2/openstack/compute/keypairs
+```
+
+##### Возвращаемые данные
+
+- ```id``` – ID ключа
+- ```name``` – название ключа
+- ```fingerprint``` – отпечаток ключа
+- ```user``` – пользователь, к которому привязан ключ
+- ```publicKey``` – публичный ключа
+- ```privateKey``` – приватный ключа
+- ```createdAt``` – дата создания
+- ```updatedAt``` – дата обновления
+- ```isDeleted``` – удалён ли ключ?
+- ```deletedAt``` – дата удаления
+
+___
+
+## Подраздел `Hypervisors`
+
+### _nn2/openstack/compute/hypervisors
+
+#### Получение данных гипервизора
+
+_Пример запроса:_
+
+```http request
+GET _nn2/openstack/compute/hypervisors
+```
+
+##### Возвращаемые данные
+
+- ```id``` – ID гипервизора
+- ```status``` – статус гипервизора
+- ```state``` – состояние гипервизора
+- ```cpuInfo``` – информация о CPU
+- ```virtualCPU``` – количество виртуальных CPU
+- ```virtualUsedCPU``` – количество используемых виртуальных CPU
+- ```localDisk``` – локальный диск (ГБ)
+- ```localDiskUsed``` – используемый объём локального диска (ГБ)
+- ```freeDisk``` – свободный объём диска (ГБ)
+- ```leastDiskAvailable``` – минимально доступный объём диска (ГБ)
+- ```localMemory``` – локальная память (МБ)
+- ```localMemoryUsed``` – используемая локальная память (МБ)
+- ```freeRam``` – свободная RAM (МБ)
+- ```hostIP``` – IP-адрес хоста
+- ```hypervisorHostname``` – имя хоста гипервизора
+- ```currentWorkload``` – текущая нагрузка
+- ```runningVM``` – количество запущенных ВМ
+
+___
+
+## Подраздел `Host Aggregates`
+
+### _nn2/openstack/compute/hostAggregates
+
+#### Получение списка агрегатов узлов
+
+_Пример запроса:_
+
+```http request
+GET _nn2/openstack/compute/hostAggregates
+```
+
+##### Возвращаемые данные
+
+- ```id``` – ID агрегата
+- ```name``` – название агрегата
+- ```hosts``` – список ID хостов
+- ```availabilityZone``` – зона доступности
+- ```createdAt``` – дата создания
+- ```updatedAt``` – дата обновления
+- ```idDeleted``` – удалён ли?
+
+___
+
+## Подраздел `Zones`
+
+### _nn2/openstack/compute/zones
+
+#### Получение списка зон доступа
+
+_Пример запроса:_
+
+```http request
+GET _nn2/openstack/compute/zones
+```
+
+##### Возвращаемые данные
+
+- ```zoneName``` – название зоны
+- ```isAvailable``` – доступность зоны
+- ```hosts``` – список хостов и сервисов
+
+___
+
+## Подраздел `Migrations`
+
+### _nn2/openstack/compute/migrations
+
+#### Получение списка миграций
+
+_Пример запроса:_
+
+```http request
+GET _nn2/openstack/compute/migrations
+```
+
+##### Возвращаемые данные
+
+- ```id``` – ID миграции
+- ```status``` – статус миграции
+- ```sourceNode``` – исходный узел
+- ```destNode``` – целевой узел
+- ```sourceCompute``` – исходный сервер
+- ```destCompute``` – целевой сервер
+- ```destHost``` – целевой хост
+- ```createdAt``` – дата создания
+- ```updatedAt``` – дата обновления
+
 ---
 
 # Раздел `Block Storage`
@@ -319,6 +450,26 @@ POST _nn2/openstack/blockStorage/volumes/create
 
 ---
 
+## Подраздел `Volume Types`
+
+### _nn2/openstack/blockStorage/volumeTypes
+
+#### Получение списка типов дисков
+
+_Пример запроса:_
+
+```http request
+GET _nn2/openstack/blockStorage/volumeTypes
+```
+
+##### Возвращаемые данные
+
+- ```id``` – ID типа диска
+- ```name``` – название типа диска
+- ```specs``` – параметры типа (ключ-значение)
+
+---
+
 ## Подраздел `Snapshots`
 
 ### _nn2/openstack/blockStorage/snapshots
@@ -356,6 +507,31 @@ POST _nn2/openstack/blockStorage/snapshots/create
     "description": "Bootable Ubuntu Volume Snapshot"
 }
 ```
+
+___
+
+## Подраздел `Backups`
+
+### _nn2/openstack/blockStorage/backups
+
+#### Получение списка резервных копий дисков
+
+_Пример запроса:_
+
+```http request
+GET _nn2/openstack/blockStorage/backups
+```
+
+##### Возвращаемые данные
+
+- ```id``` – ID резервной копии
+- ```name``` – название резервной копии
+- ```description``` – описание резервной копии
+- ```volumeId``` – ID диска, к которому относится резервная копия
+- ```status``` – статус резервной копии
+- ```size``` – размер (в Гб)
+- ```createdAt``` – дата создания
+- ```failReason``` – причина ошибки (если есть)
 
 ---
 
@@ -407,9 +583,9 @@ POST _nn2/openstack/networking/networks/create
 
 ___
 
-### Подраздел `Subnets`
+## Подраздел `Subnets`
 
-#### _nn2/openstack/networking/subnets
+### _nn2/openstack/networking/subnets
 
 #### Получение списка подсетей
 
@@ -434,12 +610,12 @@ GET _nn2/openstack/networking/subnets
 
 ### _nn2/openstack/networking/subnets/create
 
-#### Создание сети
+#### Создание подсети
 
 _Пример запроса:_
 
 ```http request
-POST _nn2/openstack/networking/networks/create
+POST _nn2/openstack/networking/subnets/create
 
 {
     "networkName": "RENDERMAN_NETWORK",
@@ -456,3 +632,213 @@ POST _nn2/openstack/networking/networks/create
     "addressMode": null
 }
 ```
+
+___
+
+## Подраздел `Routers`
+
+### _nn2/openstack/networking/routers
+
+#### Получение списка маршрутизаторов
+
+_Пример запроса:_
+
+```http request
+GET _nn2/openstack/networking/routers
+```
+
+##### Возвращаемые данные
+
+- ```id``` – ID маршрутизатора
+- ```name``` – название маршрутизатора
+- ```status``` – статус маршрутизатора
+- ```distributed``` – статус "общего" маршрутизатора
+- ```isAdmin``` – статус администрирования
+- ```routes``` – список маршрутов
+- ```externalNetworkId``` – ID внешней сети
+- ```snat``` – использование SNAT
+
+___
+
+## Подраздел `Floating Ips`
+
+### _nn2/openstack/networking/floatingIps
+
+#### Получение списка плавающих IP
+
+_Пример запроса:_
+
+```http request
+GET _nn2/openstack/networking/floatingIps
+```
+
+##### Возвращаемые данные
+
+- ```id``` – ID плавающего IP
+- ```tenantId``` – ID проекта
+- ```router``` – маршрутизатор, связанный с IP
+- ```fixedIpAddress``` – фиксированный IP-адрес
+- ```floatingNetworkId``` – ID сети плавающего IP
+
+___
+
+## Подраздел `Security Groups`
+
+### _nn2/openstack/networking/securityGroups
+
+#### Получение списка групп безопасности
+
+_Пример запроса:_
+
+```http request
+GET _nn2/openstack/networking/securityGroups
+```
+
+##### Возвращаемые данные
+
+- ```id``` – ID группы безопасности
+- ```name``` – название группы безопасности
+- ```description``` – описание группы безопасности
+- ```rules``` – ID правил группы безопасности
+
+___
+
+## Подраздел `Security Rules`
+
+### _nn2/openstack/networking/securityRules
+
+#### Получение списка правил групп безопасности
+
+_Пример запроса:_
+
+```http request
+GET _nn2/openstack/networking/securityRules
+```
+
+##### Возвращаемые данные
+
+- ```id``` – ID правила безопасности
+- ```securityGroup``` – связанная группа безопасности
+- ```description``` – описание правила
+- ```protocol``` – протокол (tcp/udp/http и др.)
+- ```remoteIpPrefix``` – удалённая IP-подсеть (CIDR)
+- ```direction``` – направление (ingress/egress)
+- ```etherType``` – тип Ethernet (IPv4/IPv6)
+- ```portRangeMin``` – минимальный порт
+- ```portRangeMax``` – максимальный порт
+
+___
+
+## Подраздел `Ports`
+
+### _nn2/openstack/networking/ports
+
+#### Получение списка портов
+
+_Пример запроса:_
+
+```http request
+GET _nn2/openstack/networking/ports
+```
+
+##### Возвращаемые данные
+
+- ```id``` – ID порта
+- ```name``` – название порта
+- ```device``` – устройство, которому принадлежит порт
+- ```network``` – сеть, к которой привязан порт
+- ```isAdmin``` – статус администрирования
+- ```isSecured``` – статус защищённого порта
+- ```secGroups``` – список групп безопасности, связанных с портом
+
+___
+
+# Раздел `Identity`
+
+## Подраздел `Users`
+
+### _nn2/openstack/identity/users
+
+#### Получение списка пользователей
+
+_Пример запроса:_
+
+```http request
+GET _nn2/openstack/identity/users
+```
+
+##### Возвращаемые данные
+
+- ```id``` – ID пользователя
+- ```name``` – имя пользователя
+- ```description``` – описание пользователя
+- ```email``` – email пользователя
+- ```domainId``` – ID домена
+- ```enabled``` – статус активности пользователя
+- ```defaultProjectId``` – ID проекта по умолчанию
+
+___
+
+## Подраздел `Groups`
+
+### _nn2/openstack/identity/groups
+
+#### Получение списка групп
+
+_Пример запроса:_
+
+```http request
+GET _nn2/openstack/identity/groups
+```
+
+##### Возвращаемые данные
+
+- ```id``` – ID группы
+- ```name``` – название группы
+- ```description``` – описание группы
+- ```domainId``` – ID домена
+- ```groupUsers``` – список пользователей группы
+
+___
+
+## Подраздел `Projects`
+
+### _nn2/openstack/identity/projects
+
+#### Получение списка проектов
+
+_Пример запроса:_
+
+```http request
+GET _nn2/openstack/identity/projects
+```
+
+##### Возвращаемые данные
+
+- ```id``` – ID проекта
+- ```name``` – название проекта
+- ```description``` – описание проекта
+- ```domainId``` – ID домена
+- ```enabled``` – статус активности проекта
+- ```parentId``` – ID родительского проекта
+
+___
+
+## Подраздел `Domains`
+
+### _nn2/openstack/identity/domains
+
+#### Получение списка доменов
+
+_Пример запроса:_
+
+```http request
+GET _nn2/openstack/identity/domains
+```
+
+##### Возвращаемые данные
+
+- ```id``` – ID домена
+- ```name``` – название домена
+- ```description``` – описание домена
+- ```enabled``` – статус активности домена
