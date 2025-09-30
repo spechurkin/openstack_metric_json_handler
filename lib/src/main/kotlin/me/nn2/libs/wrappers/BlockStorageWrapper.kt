@@ -11,12 +11,12 @@ import me.nn2.libs.services.storage.SnapshotService
 import me.nn2.libs.services.storage.VolumeService
 import org.openstack4j.api.OSClient.OSClientV3
 
-class BlockStorageWrapper(client: OSClientV3) : AWrapper(client) {
+class BlockStorageWrapper(client: OSClientV3) : AbstractWrapper(client) {
     fun getVolumes(): List<VolumeData> {
-        return VolumeService(client).getVolume()
+        return VolumeService(client).getVolumes()
     }
 
-    fun createVolume(volumeName: String, description: String?, size: Int, volumeType: String, imageName: String?) {
+    fun createVolume(volumeName: String?, description: String?, size: Int, volumeType: String?, imageName: String?) {
         VolumeService(client).createVolume(
             volumeName = volumeName,
             description = description,

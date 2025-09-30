@@ -6,7 +6,7 @@ import me.nn2.libs.services.compute.*
 import org.openstack4j.api.OSClient.OSClientV3
 import java.net.URI
 
-class ComputeWrapper(client: OSClientV3) : AWrapper(client) {
+class ComputeWrapper(client: OSClientV3) : AbstractWrapper(client) {
     fun getFlavors(): List<FlavorData> {
         return FlavorService(client).getFlavors()
     }
@@ -33,6 +33,10 @@ class ComputeWrapper(client: OSClientV3) : AWrapper(client) {
         )
     }
 
+    fun deleteFlavor(flavorName: String) {
+        FlavorService(client).deleteFlavor(flavorName)
+    }
+
     fun getImages(): List<ImageData> {
         return ImageService(client).getImages()
     }
@@ -51,6 +55,19 @@ class ComputeWrapper(client: OSClientV3) : AWrapper(client) {
             visibility,
             URI(urlToImg).toURL()
         )
+    }
+
+    fun updateImage(
+        imageName: String,
+        minRamGb: Long,
+        minDiskGb: Long,
+        visibility: String
+    ): ImageData {
+        return ImageService(client).updateImage(imageName, minRamGb, minDiskGb, visibility)
+    }
+
+    fun deleteImage(imageName: String) {
+        ImageService(client).deleteImage(imageName)
     }
 
     fun getServers(): List<ServerData> {
@@ -75,8 +92,28 @@ class ComputeWrapper(client: OSClientV3) : AWrapper(client) {
         )
     }
 
+    fun updateServer(
+        serverName: String,
+        ipv4Address: String?,
+        ipv6Address: String?,
+    ): ServerData {
+        return ServerService(client).updateServer(serverName, ipv4Address, ipv6Address)
+    }
+
+    fun deleteServer(serverName: String) {
+        ServerService(client).deleteServer(serverName)
+    }
+
     fun getKeypairs(): List<KeypairData> {
         return KeypairService(client).getKeypairs()
+    }
+
+    fun createKeypair(keyName: String, publicKey: String?) {
+        KeypairService(client).createKeypair(keyName, publicKey)
+    }
+
+    fun deleteKeypair(keyName: String) {
+        KeypairService(client).deleteKeypair(keyName)
     }
 
     fun getServices(): List<ServiceData> {
@@ -100,6 +137,14 @@ class ComputeWrapper(client: OSClientV3) : AWrapper(client) {
     }
 
     fun getServerGroups(): List<ServerGroupData> {
-        return ServerGroupService(client).getServerGroup()
+        return ServerGroupService(client).getServerGroups()
+    }
+
+    fun createServerGroup(groupName: String, policy: String) {
+        return ServerGroupService(client).createServerGroup(groupName, policy)
+    }
+
+    fun deleteServerGroup(groupName: String) {
+        return ServerGroupService(client).deleteServerGroup(groupName)
     }
 }

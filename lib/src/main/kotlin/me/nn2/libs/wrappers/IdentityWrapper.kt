@@ -7,7 +7,7 @@ import me.nn2.libs.data.identity.UserData
 import me.nn2.libs.services.IdentityService
 import org.openstack4j.api.OSClient.OSClientV3
 
-class IdentityWrapper(client: OSClientV3) : AWrapper(client) {
+class IdentityWrapper(client: OSClientV3) : AbstractWrapper(client) {
     fun getUsers(): List<UserData> {
         return IdentityService(client).getUsers()
     }
