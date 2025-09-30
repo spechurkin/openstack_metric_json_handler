@@ -30,4 +30,15 @@ class ServerRequest(
             return ServerRequest(serverName, imageName, flavorName, adminPass, keyPair, networkNames)
         }
     }
+
+    override fun toString(): String {
+        return """Request(
+                    serverName='$serverName',
+                    imageName='$imageName',
+                    flavorName='$flavorName',
+                    adminPass='$adminPass',
+                    keyPair=$keyPair,
+                    networkNames=$networkNames
+                    )""".trimIndent()
+    }
 }

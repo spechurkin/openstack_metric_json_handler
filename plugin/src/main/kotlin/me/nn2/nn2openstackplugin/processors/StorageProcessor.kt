@@ -47,7 +47,6 @@ class StorageProcessor() : IProcessor {
                                     body["volumeName"]?.let { volumeName(it.toString()) }
                                     body["description"]?.let { description(it.toString()) }
                                     body["volumeType"]?.let { volumeType(it.toString()) }
-                                    body["bootable"]?.let { bootable(it as Boolean) }
                                     body["imageRef"]?.let { imageRef(it.toString()) }
                                 }.build()
 

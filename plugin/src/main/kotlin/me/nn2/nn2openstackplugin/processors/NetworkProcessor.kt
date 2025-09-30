@@ -19,10 +19,22 @@ class NetworkProcessor() : IProcessor {
             RestRequest.Method.GET -> {
                 try {
                     var dto: Set<Any> = setOf()
+
                     with(request.path()) {
                         when {
                             contains("networks") -> dto = networking.getNetworks().toSet()
-                            contains("subnets") -> dto = networking.getSubnets().toSet()
+                            contains("subnets") -> {
+                                try {
+                                    val networkName = request.param("networkName")
+                                    if (networkName != null) {
+                                        dto = networking.getSubnets(networkName).toSet()
+                                    }
+                                } catch (e: Exception) {
+                                    logger.error(e.message, e)
+                                    MessageHelper.sendExceptionMessage(channel, e)
+                                }
+                            }
+
                             contains("ports") -> dto = networking.getPorts().toSet()
                             contains("routers") -> dto = networking.getRouters().toSet()
                             contains("securityGroups") -> dto = networking.getSecurityGroups().toSet()
