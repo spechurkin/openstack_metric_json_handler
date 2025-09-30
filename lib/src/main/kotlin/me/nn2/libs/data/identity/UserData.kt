@@ -5,7 +5,7 @@ data class UserData(
     val name: String?,
     val description: String?,
     val email: String? = null,
-    val domainId: String?,
+    val domain: String?,
     val enabled: Boolean?,
-    val defaultProjectId: String? = null,
+    val defaultProjectName: String? = null,
 )

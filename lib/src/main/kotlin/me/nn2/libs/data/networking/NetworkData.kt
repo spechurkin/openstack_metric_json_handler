@@ -9,5 +9,5 @@ data class NetworkData(
     val tenantId: String,
     val admin: Boolean,
     val mtu: Int,
-    val subnets: MutableList<String>,
+    val subnets: List<String>,
 )

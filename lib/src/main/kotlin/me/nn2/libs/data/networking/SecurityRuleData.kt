@@ -2,6 +2,7 @@ package me.nn2.libs.data.networking
 
 data class SecurityRuleData(
     val id: String?,
+    val tenantId: String,
     val securityGroup: String,
     val description: String?,
     val protocol: String?,
