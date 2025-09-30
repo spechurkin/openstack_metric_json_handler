@@ -7,7 +7,7 @@ import org.openstack4j.api.OSClient
 import org.openstack4j.model.storage.block.VolumeSnapshot
 
 class SnapshotService(override val client: OSClient.OSClientV3) : IMetricService {
-    val volumeService = VolumeService(client)
+    private val volumeService = VolumeService(client)
 
     fun getSnapshots(): List<SnapshotData> {
         return convertSnapshotToDto()
@@ -22,6 +22,14 @@ class SnapshotService(override val client: OSClient.OSClientV3) : IMetricService
             .build()
 
         client.blockStorage().snapshots().create(volumeSnapshot)
+    }
+
+    fun deleteSnapshot(snapshotName: String) {
+        client.blockStorage().snapshots().delete(getSnapshotIdByName(snapshotName))
+    }
+
+    fun getSnapshotIdByName(snapshotName: String): String? {
+        return client.blockStorage().snapshots().list().find { it.name == snapshotName }?.id
     }
 
     fun convertSnapshotToDto(snapshot: VolumeSnapshot): SnapshotData {

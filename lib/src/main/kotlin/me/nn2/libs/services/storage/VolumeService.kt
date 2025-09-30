@@ -35,12 +35,37 @@ class VolumeService(override val client: OSClient.OSClientV3) : IMetricService {
         client.blockStorage().volumes().create(volumeCreate.build())
     }
 
-    fun getVolumeIdByName(volumeName: String): String? {
-        return client.blockStorage().volumes().list().find { it.name == volumeName }?.id
+    fun updateVolume(volumeName: String, newName: String, description: String, newSize: Int) {
+        val volumeId = getVolumeIdByName(volumeName)
+
+        client.blockStorage().volumes().update(volumeId, newName, description)
+        if (newSize > 0) {
+            client.blockStorage().volumes().extend(volumeId, newSize)
+        }
+    }
+
+    fun deleteVolume(volumeName: String) {
+        val volumeId = getVolumeIdByName(volumeName)
+
+        client.blockStorage().volumes().delete(volumeId)
+        client.blockStorage().volumes().forceDelete(volumeId)
     }
 
     fun getVoluteTypes(): List<VolumeTypeData> {
         return convertVolumeTypeToDto()
+    }
+
+    fun createVolumeType(typeName: String, specs: Map<String, String>) {
+        client.blockStorage().volumes().createVolumeType(
+            Builders.volumeType()
+                .name(typeName)
+                .extraSpecs(specs)
+                .build()
+        )
+    }
+
+    fun getVolumeIdByName(volumeName: String): String? {
+        return client.blockStorage().volumes().list().find { it.name == volumeName }?.id
     }
 
     private fun convertVolumeTypeToDto(): List<VolumeTypeData> {

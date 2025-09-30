@@ -26,12 +26,32 @@ class BlockStorageWrapper(client: OSClientV3) : AWrapper(client) {
         )
     }
 
+    fun updateVolume(volumeName: String, newName: String, description: String, newSize: Int) {
+        VolumeService(client).updateVolume(volumeName, newName, description, newSize)
+    }
+
+    fun deleteVolume(volumeName: String) {
+        VolumeService(client).deleteVolume(volumeName)
+    }
+
     fun getVolumeTypes(): List<VolumeTypeData> {
         return VolumeService(client).getVoluteTypes()
     }
 
+    fun createVolumeType(typeName: String, specs: Map<String, String>) {
+        VolumeService(client).createVolumeType(typeName, specs)
+    }
+
     fun getBackups(): List<BackupData> {
         return BackupService(client).getBackups()
+    }
+
+    fun createBackup(name: String, description: String, volumeName: String) {
+        BackupService(client).createBackup(
+            name = name,
+            description = description,
+            volumeName = volumeName
+        )
     }
 
     fun getSnapshots(): List<SnapshotData> {
@@ -44,6 +64,10 @@ class BlockStorageWrapper(client: OSClientV3) : AWrapper(client) {
             description = description,
             volumeName = volumeName
         )
+    }
+
+    fun deleteSnapshot(snapshotName: String) {
+        SnapshotService(client).deleteSnapshot(snapshotName)
     }
 
     fun getServices(): List<ServiceData> {
