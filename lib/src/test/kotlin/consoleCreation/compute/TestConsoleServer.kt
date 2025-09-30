@@ -1,17 +1,21 @@
 package proj.work.consoleCreation.compute
 
 import kotlinx.coroutines.delay
+import me.nn2.libs.data.compute.ServerData
+import me.nn2.libs.services.compute.FlavorService
+import me.nn2.libs.services.compute.ImageService
+import me.nn2.libs.services.networking.NetworkService
 import org.openstack4j.api.Builders
 import org.openstack4j.api.OSClient.OSClientV3
 import org.openstack4j.core.transport.Config
 import org.openstack4j.model.common.Identifier
 import org.openstack4j.model.compute.Action
 import org.openstack4j.model.compute.RebootType
+import org.openstack4j.model.compute.Server
 import org.openstack4j.model.compute.ServerUpdateOptions
 import org.openstack4j.model.compute.actions.BackupOptions
 import org.openstack4j.openstack.OSFactory
 import proj.work.*
-import proj.work.consoleCreation.network.getNetworkIdByName
 
 val os: OSClientV3 = OSFactory.builderV3()
     .endpoint(identityUrl)
@@ -24,13 +28,14 @@ val os: OSClientV3 = OSFactory.builderV3()
     .authenticate()
 
 suspend fun main() {
-    createServer(
-        "Klyde",
-        "Ubuntu Server 24.10",
-        "DefaultFlavor",
-        keyPair = "Kyle",
-        networkNames = listOf("MY_NETWORK", "MY_NETWORK2")
-    )
+    println(getServers())
+//    createServer(
+//        "Klyde",
+//        "Ubuntu Server 25.04",
+//        "m1.big",
+//        keyPair = "Kyle",
+//        networkNames = listOf("MY_NETWORK2")
+//    )
 //    createServer()
 //    attachVolume(getServerIdByName("DefaultServer"), getVolumeIdByName("DefaultVolume"), "/dev/vda")
 //    resizeServer(getServerIdByName("DefaultServer"), getFlavorIdByName("DefaultFlavor"))
@@ -39,6 +44,14 @@ suspend fun main() {
 //    updateServer(getServerIdByName("DefaultServer"), "Kyle")
 //    rebootServer(getServerIdByName("DefaultServer"), RebootType.HARD)
 //    println(getFlavorIdByName("DefaultFlavor"))
+}
+
+fun getServers(): List<ServerData> {
+    return convertToDto()
+}
+
+fun getServer(serverName: String): Server? {
+    return os.compute().servers().list().firstOrNull { it.name == serverName }
 }
 
 fun createServer(
@@ -51,20 +64,46 @@ fun createServer(
 ) {
     val serverCreate = Builders.server()
         .name(serverName)
-        .image(getImageIdByName(imageName))
-        .flavor(getFlavorIdByName(flavorName))
-        .networks(networkNames.map { name -> getNetworkIdByName(name) })
+        .image(ImageService(os).getImage(imageName)!!.id)
+        .flavor(FlavorService(os).getFlavor(flavorName)!!.id)
+        .networks(networkNames.map { NetworkService(os).getNetwork(it)!!.id })
         .addAdminPass(adminPass)
         .apply {
             keyPair?.let { keypairName(it) }
         }.build()
 
-    for (network in networkNames) {
-        println(network)
-        println(getNetworkIdByName(network))
-    }
-
     os.compute().servers().boot(serverCreate)
+}
+
+private fun convertToDto(): List<ServerData> {
+    return os.compute().servers().list().map { server ->
+        val flavor = server.flavor
+        val flavorId = flavor?.id ?: "Не доступен"
+        val flavorName = if (flavorId == "Не доступен") {
+            flavorId
+        } else flavor.name
+
+        val image = server.image
+        val imageId = image?.id ?: "-"
+        val imageName = if (imageId == "-") {
+            imageId
+        } else image.name
+
+        ServerData(
+            id = server.id,
+            name = server.name,
+            status = server.status.toString(),
+            flavorName = flavorName,
+            imageName = imageName,
+            addresses = server.addresses.addresses.map {
+                it.key + ": " + it.value.map { address -> address.addr }
+            },
+            securityGroups = server.securityGroups?.map { it.name } ?: listOf(""),
+            keyName = server.keyName,
+            created = server.created,
+            updated = server.updated
+        )
+    }
 }
 
 fun updateServer(serverId: String?, newName: String, ip4Address: String = "", ip6Address: String = "") {

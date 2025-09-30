@@ -1,28 +1,43 @@
 package proj.work.consoleCreation.network
 
-import org.openstack4j.api.Builders
-import org.openstack4j.model.network.IPVersionType
+import me.nn2.libs.data.networking.SubnetData
+import org.openstack4j.model.network.Subnet
 import proj.work.consoleCreation.compute.os
 
-fun main(args: Array<String>) {
-    createSubnet(args)
+fun main() {
+    os.networking().network().list().forEach {
+        println(it.name + ":= " + getSubnets(it.name) + "\n")
+    }
+
 }
 
-private fun createSubnet(args: Array<String>) {
-    val subnet = Builders.subnet()
-        .name(args.getOrElse(0) { "DefaultSubnet" })
-        .networkId("09a39f90-a319-4df5-89be-2fc752dd3f77")
-        .ipVersion(IPVersionType.V4)
-        .cidr("172.29.248.0/22")
-        .build()
+fun getSubnets(networkName: String): List<SubnetData> {
+    val networkSubnets = os.networking().network().get(getNetworkIdByName(networkName)).subnets
+    val allSubnets = mutableListOf<SubnetData>()
 
-    os.networking().subnet().create(subnet)
+    for (subnet in networkSubnets) {
+        allSubnets.add(convertToDto(os.networking().subnet().get(subnet)))
+    }
+
+    return allSubnets
 }
 
-fun removeSubnet(subnetName: String) {
-    os.networking().subnet().delete(getSubnetIdByName(subnetName))
-}
-
-fun getSubnetIdByName(subnetName: String): String {
-    return os.networking().subnet().list().find { it.name == subnetName }!!.id
+private fun convertToDto(subnet: Subnet): SubnetData {
+    return SubnetData(
+        id = subnet.id,
+        name = subnet.name,
+        ipVersion = subnet.ipVersion.name,
+        dns = subnet.dnsNames,
+        pools = subnet.allocationPools.map { mapEntry ->
+            StringBuilder().append("start: ").append(mapEntry.start).append(", end: ").append(mapEntry.end)
+                .toString()
+        },
+        routes = subnet.hostRoutes.map { hostRoute ->
+            hostRoute.destination
+        },
+        gateway = subnet.gateway,
+        _cidr = subnet.cidr,
+        ipV6AddressMode = subnet.ipv6AddressMode?.ipv6AddressMode,
+        ipV6RaMode = subnet.ipv6RaMode?.ipv6RaMode
+    )
 }

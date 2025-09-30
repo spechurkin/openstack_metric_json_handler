@@ -1,10 +1,17 @@
 package proj.work.consoleCreation.compute
 
 import org.openstack4j.api.Builders
+import org.openstack4j.model.compute.Flavor
 
 fun main(args: Array<String>) {
-    createFlavor(args)
+
+    println(getFlavors())
+//    createFlavor(args)
 //    removeFlavor(getFlavorIdByName("DefaultFlavor"))
+}
+
+fun getFlavors(): List<Flavor?>? {
+    return os.compute().flavors().list()
 }
 
 fun createFlavor(args: Array<String>) {

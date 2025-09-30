@@ -1,16 +1,21 @@
 package proj.work.consoleCreation.network
 
+import me.nn2.libs.data.networking.NetworkData
+import me.nn2.libs.services.networking.SubnetService
 import org.openstack4j.api.Builders
+import org.openstack4j.model.network.Network
 import proj.work.consoleCreation.compute.os
 
 fun main() {
-    createNetwork(os.identity().projects().list().find { it.name == "admin" }?.id, "DefaultNetwork")
-//    updateNetwork(
-//        getNetworkIdByName("DefaultNetwork"),
-//        "New Network",
-//        isShared = true,
-//        isAdmin = true
-//    )
+    println(getNetwork("MY_NETWORK3"))
+}
+
+fun getNetworks(): List<NetworkData> {
+    return convertToDto()
+}
+
+fun getNetwork(networkName: String): NetworkData? {
+    return getNetworks().firstOrNull { it.name == networkName }
 }
 
 fun createNetwork(projectId: String?, networkName: String) {
@@ -39,4 +44,26 @@ fun deleteNetwork(networkId: String?) {
 
 fun getNetworkIdByName(networkName: String): String? {
     return os.networking().network().list().find { it.name == networkName }?.id
+}
+
+fun convertToDto(network: Network): NetworkData {
+    val subnets = SubnetService(os).getNetworkSubnets(network.name).map { "${it.name} (${it._cidr})" }
+
+    return NetworkData(
+        id = network.id,
+        name = network.name,
+        status = network.status.toString(),
+        external = network.isRouterExternal,
+        shared = network.isShared,
+        tenantId = network.tenantId,
+        admin = network.isAdminStateUp,
+        mtu = network.mtu,
+        subnets = subnets
+    )
+}
+
+private fun convertToDto(): List<NetworkData> {
+    return os.networking().network().list().map {
+        convertToDto(it)
+    }
 }

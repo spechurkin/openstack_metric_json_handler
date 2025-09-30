@@ -1,6 +1,7 @@
 package proj.work
 
 import me.nn2.libs.OpenStackWrapper
+import me.nn2.libs.services.storage.ServiceService
 
 const val identityUrl = "https://10.1.0.48:5000/v3"
 const val login = "admin"
@@ -10,6 +11,9 @@ const val project = "admin"
 
 fun main() {
     val wrapper = OpenStackWrapper(identityUrl, login, password, domain, project, true)
+
+//    println(ServiceService(wrapper.client()).getServices())
+//    println(wrapper.client().compute().services().list())
 
 //    println(wrapper.compute().getServers())
 //    println(wrapper.compute().getImages())
@@ -25,10 +29,10 @@ fun main() {
 //
 //    println(wrapper.identity().getUsers())
 //    println(wrapper.identity().getGroups())
-    println(wrapper.identity().getProjects())
+//    println(wrapper.identity().getProjects())
 //    println(wrapper.identity().getDomains())
 //
-//    println(wrapper.blockStorage().getVolumes())
+    println(wrapper.blockStorage().getVolumes())
 //    println(wrapper.blockStorage().getBackups())
 //    println(wrapper.blockStorage().getSnapshots())
 //    println(wrapper.blockStorage().getServices())
