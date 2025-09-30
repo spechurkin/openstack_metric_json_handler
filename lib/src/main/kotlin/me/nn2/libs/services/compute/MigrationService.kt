@@ -1,12 +1,11 @@
 package me.nn2.libs.services.compute
 
 import me.nn2.libs.data.compute.MigrationData
-import me.nn2.libs.services.IMetricService
-import org.openstack4j.api.OSClient
+import me.nn2.libs.services.AbstractMetricService
+import org.openstack4j.api.OSClient.OSClientV3
 import org.openstack4j.model.compute.ext.Migration
 
-class MigrationService(override val client: OSClient.OSClientV3) : IMetricService {
-
+class MigrationService(client: OSClientV3) : AbstractMetricService(client) {
     fun getMigrations(): List<MigrationData> {
         return convertToDto()
     }

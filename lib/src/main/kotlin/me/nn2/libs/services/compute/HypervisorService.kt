@@ -1,12 +1,11 @@
 package me.nn2.libs.services.compute
 
 import me.nn2.libs.data.compute.HypervisorData
-import me.nn2.libs.services.IMetricService
-import org.openstack4j.api.OSClient
+import me.nn2.libs.services.AbstractMetricService
+import org.openstack4j.api.OSClient.OSClientV3
 import org.openstack4j.model.compute.ext.Hypervisor
 
-class HypervisorService(override val client: OSClient.OSClientV3) : IMetricService {
-
+class HypervisorService(client: OSClientV3) : AbstractMetricService(client) {
     fun getHypervisors(): List<HypervisorData> {
         return convertToDto()
     }

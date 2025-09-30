@@ -1,12 +1,11 @@
 package me.nn2.libs.services.compute
 
 import me.nn2.libs.data.compute.ZoneData
-import me.nn2.libs.services.IMetricService
-import org.openstack4j.api.OSClient
+import me.nn2.libs.services.AbstractMetricService
+import org.openstack4j.api.OSClient.OSClientV3
 import org.openstack4j.model.compute.ext.AvailabilityZone
 
-class ZoneService(override val client: OSClient.OSClientV3) : IMetricService {
-
+class ZoneService(client: OSClientV3) : AbstractMetricService(client) {
     fun getZones(): List<ZoneData> {
         return convertToDto()
     }

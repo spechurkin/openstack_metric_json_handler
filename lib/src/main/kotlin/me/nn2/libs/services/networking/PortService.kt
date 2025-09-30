@@ -1,12 +1,11 @@
 package me.nn2.libs.services.networking
 
 import me.nn2.libs.data.networking.PortData
-import me.nn2.libs.services.IMetricService
-import org.openstack4j.api.OSClient
+import me.nn2.libs.services.AbstractMetricService
 import org.openstack4j.model.network.Port
 
-class PortService(override val client: OSClient.OSClientV3) : IMetricService {
-
+import org.openstack4j.api.OSClient.OSClientV3
+class PortService(client: OSClientV3) : AbstractMetricService(client) {
     fun getPorts(): List<PortData> {
         return convertToDto()
     }
