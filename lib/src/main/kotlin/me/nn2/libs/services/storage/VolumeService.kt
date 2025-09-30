@@ -2,41 +2,56 @@ package me.nn2.libs.services.storage
 
 import me.nn2.libs.data.storage.VolumeData
 import me.nn2.libs.data.storage.VolumeTypeData
-import me.nn2.libs.services.IMetricService
+import me.nn2.libs.services.AbstractMetricService
 import me.nn2.libs.services.compute.ImageService
 import org.openstack4j.api.Builders
-import org.openstack4j.api.OSClient
+import org.openstack4j.api.OSClient.OSClientV3
+import org.openstack4j.model.storage.block.Volume
 
-class VolumeService(override val client: OSClient.OSClientV3) : IMetricService {
+class VolumeService(client: OSClientV3) : AbstractMetricService(client) {
     val imageService = ImageService(client)
 
-    fun getVolume(): List<VolumeData> {
+    fun getVolumes(): List<VolumeData> {
         return convertVolumeToDto()
     }
 
+    fun getVolume(volumeName: String?): Volume? {
+        return client.blockStorage().volumes().list().firstOrNull { it.name == volumeName }
+    }
+
     fun createVolume(
-        volumeName: String,
+        volumeName: String?,
         description: String?,
         size: Int,
-        volumeType: String,
+        volumeType: String?,
         imageName: String?
     ) {
-        val volumeCreate = Builders.volume()
-            .name(volumeName)
-            .description(description.orEmpty())
-            .size(size)
-            .volumeType(volumeType)
+        if (getVolume(volumeName) == null) {
+            val volumeCreate = Builders.volume()
+                .name(volumeName)
+                .description(description.orEmpty())
+                .size(size)
+                .volumeType(volumeType)
 
-        if (!imageName.isNullOrEmpty()) {
-            volumeCreate.bootable(true)
-            volumeCreate.imageRef(imageService.getImageIdByName(imageName))
+            if (!imageName.isNullOrEmpty()) {
+                volumeCreate.bootable(true)
+                volumeCreate.imageRef(imageService.getImage(imageName)!!.id)
+            }
+
+            client.blockStorage().volumes().create(volumeCreate.build())
+        } else {
+            createVolume(
+                addSymbolsToCopy(volumeName),
+                description,
+                size,
+                volumeType,
+                imageName
+            )
         }
-
-        client.blockStorage().volumes().create(volumeCreate.build())
     }
 
     fun updateVolume(volumeName: String, newName: String, description: String, newSize: Int) {
-        val volumeId = getVolumeIdByName(volumeName)
+        val volumeId = getVolume(volumeName)!!.id
 
         client.blockStorage().volumes().update(volumeId, newName, description)
         if (newSize > 0) {
@@ -45,7 +60,7 @@ class VolumeService(override val client: OSClient.OSClientV3) : IMetricService {
     }
 
     fun deleteVolume(volumeName: String) {
-        val volumeId = getVolumeIdByName(volumeName)
+        val volumeId = getVolume(volumeName)!!.id
 
         client.blockStorage().volumes().delete(volumeId)
         client.blockStorage().volumes().forceDelete(volumeId)
@@ -62,10 +77,6 @@ class VolumeService(override val client: OSClient.OSClientV3) : IMetricService {
                 .extraSpecs(specs)
                 .build()
         )
-    }
-
-    fun getVolumeIdByName(volumeName: String): String? {
-        return client.blockStorage().volumes().list().find { it.name == volumeName }?.id
     }
 
     private fun convertVolumeTypeToDto(): List<VolumeTypeData> {

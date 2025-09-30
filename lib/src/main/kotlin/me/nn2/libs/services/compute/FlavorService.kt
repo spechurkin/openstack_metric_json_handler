@@ -1,18 +1,18 @@
 package me.nn2.libs.services.compute
 
 import me.nn2.libs.data.compute.FlavorData
-import me.nn2.libs.services.IMetricService
+import me.nn2.libs.services.AbstractMetricService
 import org.openstack4j.api.Builders
 import org.openstack4j.api.OSClient.OSClientV3
 import org.openstack4j.model.compute.Flavor
 
-class FlavorService(override val client: OSClientV3) : IMetricService {
+class FlavorService(client: OSClientV3) : AbstractMetricService(client) {
     fun getFlavors(): List<FlavorData> {
         return convertToDto()
     }
 
-    fun getFlavorIdByName(flavorName: String): String? {
-        return client.compute().flavors().list().find { it.name == flavorName }?.id
+    fun getFlavor(flavorName: String): Flavor? {
+        return client.compute().flavors().list().firstOrNull { it.name == flavorName }
     }
 
     fun createFlavor(
@@ -25,18 +25,35 @@ class FlavorService(override val client: OSClientV3) : IMetricService {
         rxtxFactor: Float,
         isPublic: Boolean,
     ) {
-        val flavorCreate = Builders.flavor()
-            .name(flavorName)
-            .ram(ramMb)
-            .disk(diskGb)
-            .ephemeral(ephemeralGb)
-            .swap(swapMb)
-            .vcpus(vcpus)
-            .rxtxFactor(rxtxFactor)
-            .isPublic(isPublic)
-            .build()
+        if (getFlavor(flavorName) == null) {
+            val flavorCreate = Builders.flavor()
+                .name(flavorName)
+                .ram(ramMb)
+                .disk(diskGb)
+                .ephemeral(ephemeralGb)
+                .swap(swapMb)
+                .vcpus(vcpus)
+                .rxtxFactor(rxtxFactor)
+                .isPublic(isPublic)
+                .build()
 
-        client.compute().flavors().create(flavorCreate)
+            client.compute().flavors().create(flavorCreate)
+        } else {
+            createFlavor(
+                addSymbolsToCopy(flavorName),
+                ramMb,
+                diskGb,
+                ephemeralGb,
+                swapMb,
+                vcpus,
+                rxtxFactor,
+                isPublic
+            )
+        }
+    }
+
+    fun deleteFlavor(flavorName: String) {
+        client.compute().flavors().delete(getFlavor(flavorName)!!.id)
     }
 
     fun convertToDto(flavor: Flavor): FlavorData {

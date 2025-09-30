@@ -1,32 +1,28 @@
 package me.nn2.libs.services.compute
 
 import me.nn2.libs.data.compute.KeypairData
-import me.nn2.libs.services.IMetricService
+import me.nn2.libs.services.AbstractMetricService
 import org.openstack4j.api.OSClient.OSClientV3
 import org.openstack4j.model.compute.Keypair
 
-class KeypairService(override val client: OSClientV3) : IMetricService {
-
+class KeypairService(client: OSClientV3) : AbstractMetricService(client) {
     fun getKeypairs(): List<KeypairData> {
         return convertToDto()
     }
 
+    fun createKeypair(keyName: String, publicKey: String? = null) {
+        client.compute().keypairs().create(keyName, publicKey)
+    }
+
+    fun deleteKeypair(keyName: String) {
+        client.compute().keypairs().delete(keyName)
+    }
+
     fun computeToDto(keypair: Keypair): KeypairData {
         return KeypairData(
-            id = keypair.id,
             name = keypair.name,
             fingerprint = keypair.fingerprint,
-            user = try {
-                client.identity().users().get(keypair.userId).name
-            } catch (_: Exception) {
-                ""
-            },
-            publicKey = keypair.publicKey,
-            privateKey = keypair.privateKey,
-            createdAt = keypair.createdAt,
-            updatedAt = keypair.updatedAt,
-            isDeleted = keypair.deleted,
-            deletedAt = keypair.deletedAt
+            publicKey = keypair.publicKey
         )
     }
 

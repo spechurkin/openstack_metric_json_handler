@@ -1,23 +1,22 @@
 package me.nn2.libs.services.networking
 
 import me.nn2.libs.data.networking.NetworkData
-import me.nn2.libs.services.IMetricService
+import me.nn2.libs.services.AbstractMetricService
 import me.nn2.libs.services.IdentityService
 import org.openstack4j.api.Builders
-import org.openstack4j.api.OSClient
+import org.openstack4j.api.OSClient.OSClientV3
 import org.openstack4j.model.network.Network
 import org.openstack4j.model.network.NetworkType
 
-class NetworkService(override val client: OSClient.OSClientV3) : IMetricService {
-
+class NetworkService(client: OSClientV3) : AbstractMetricService(client) {
     private val identityService = IdentityService(client)
 
     fun getNetworks(): List<NetworkData> {
         return convertToDto()
     }
 
-    fun getNetworkIdByName(networkName: String): String? {
-        return client.networking().network().list(mapOf("name" to networkName)).firstOrNull()?.id
+    fun getNetwork(networkName: String): Network? {
+        return client.networking().network().list().firstOrNull { it.name == networkName }
     }
 
     fun createNetwork(
@@ -30,21 +29,57 @@ class NetworkService(override val client: OSClient.OSClientV3) : IMetricService 
         physicalNetwork: String?,
         segmentId: String?
     ) {
-        val networkCreate = Builders.network()
-            .name(networkName)
-            .tenantId(identityService.getProjectIdByName(projectName))
+        if (getNetwork(networkName) == null) {
+            val networkCreate = Builders.network()
+                .name(networkName)
+                .tenantId(identityService.getProject(projectName)!!.id)
+                .adminStateUp(isAdmin)
+                .isRouterExternal(isExternal)
+                .isShared(isShared)
+                .networkType(networkType)
+                .physicalNetwork(physicalNetwork)
+                .segmentId(segmentId)
+                .build()
+
+            client.networking().network().create(networkCreate)
+        } else {
+            createNetwork(
+                projectName,
+                addSymbolsToCopy(networkName),
+                isShared,
+                isExternal,
+                isAdmin,
+                networkType,
+                physicalNetwork,
+                segmentId
+            )
+        }
+    }
+
+    fun updateNetwork(
+        networkName: String,
+        newName: String,
+        isAdmin: Boolean,
+        isShared: Boolean,
+        isDefault: Boolean
+    ) {
+        val networkUpdate = Builders.networkUpdate()
+            .name(newName)
             .adminStateUp(isAdmin)
-            .isRouterExternal(isExternal)
-            .isShared(isShared)
-            .networkType(networkType)
-            .physicalNetwork(physicalNetwork)
-            .segmentId(segmentId)
+            .shared(isShared)
+            .isDefault(isDefault)
             .build()
 
-        client.networking().network().create(networkCreate)
+        client.networking().network().update(getNetwork(networkName)!!.id, networkUpdate)
+    }
+
+    fun deleteNetwork(networkName: String) {
+        client.networking().network().delete(getNetwork(networkName)!!.id)
     }
 
     fun convertToDto(network: Network): NetworkData {
+        val subnets = SubnetService(client).getNetworkSubnets(network.name).map { "${it.name} (${it._cidr})" }
+
         return NetworkData(
             id = network.id,
             name = network.name,
@@ -54,7 +89,7 @@ class NetworkService(override val client: OSClient.OSClientV3) : IMetricService 
             tenantId = network.tenantId,
             admin = network.isAdminStateUp,
             mtu = network.mtu,
-            subnets = network.subnets,
+            subnets = subnets
         )
     }
 
