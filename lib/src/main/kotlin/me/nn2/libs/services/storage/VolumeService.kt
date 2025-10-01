@@ -7,6 +7,7 @@ import me.nn2.libs.services.compute.ImageService
 import org.openstack4j.api.Builders
 import org.openstack4j.api.OSClient.OSClientV3
 import org.openstack4j.model.storage.block.Volume
+import org.openstack4j.model.storage.block.VolumeType
 
 class VolumeService(client: OSClientV3) : AbstractMetricService(client) {
     val imageService = ImageService(client)
@@ -50,33 +51,40 @@ class VolumeService(client: OSClientV3) : AbstractMetricService(client) {
         }
     }
 
-    fun updateVolume(volumeName: String, newName: String, description: String, newSize: Int) {
+    fun updateVolume(volumeName: String, newName: String?, description: String?, newSize: Int?) {
         val volumeId = getVolume(volumeName)!!.id
 
         client.blockStorage().volumes().update(volumeId, newName, description)
-        if (newSize > 0) {
-            client.blockStorage().volumes().extend(volumeId, newSize)
+        if (newSize != null) {
+            if (newSize > 0) {
+                client.blockStorage().volumes().extend(volumeId, newSize)
+            }
         }
     }
 
     fun deleteVolume(volumeName: String) {
-        val volumeId = getVolume(volumeName)!!.id
-
-        client.blockStorage().volumes().delete(volumeId)
-        client.blockStorage().volumes().forceDelete(volumeId)
+        client.blockStorage().volumes().forceDelete(getVolume(volumeName)!!.id)
     }
 
     fun getVoluteTypes(): List<VolumeTypeData> {
         return convertVolumeTypeToDto()
     }
 
-    fun createVolumeType(typeName: String, specs: Map<String, String>) {
+    fun getVoluteType(typeName: String): VolumeType? {
+        return client.blockStorage().volumes().listVolumeTypes().firstOrNull { it.name == typeName }
+    }
+
+    fun createVolumeType(typeName: String, specs: Map<String, String>?) {
         client.blockStorage().volumes().createVolumeType(
             Builders.volumeType()
                 .name(typeName)
                 .extraSpecs(specs)
                 .build()
         )
+    }
+
+    fun deleteVolumeType(volumeType: String) {
+        client.blockStorage().volumes().deleteVolumeType(getVoluteType(volumeType)!!.id)
     }
 
     private fun convertVolumeTypeToDto(): List<VolumeTypeData> {

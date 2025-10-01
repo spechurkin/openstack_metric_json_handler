@@ -26,7 +26,7 @@ class BlockStorageWrapper(client: OSClientV3) : AbstractWrapper(client) {
         )
     }
 
-    fun updateVolume(volumeName: String, newName: String, description: String, newSize: Int) {
+    fun updateVolume(volumeName: String, newName: String?, description: String?, newSize: Int?) {
         VolumeService(client).updateVolume(volumeName, newName, description, newSize)
     }
 
@@ -38,20 +38,36 @@ class BlockStorageWrapper(client: OSClientV3) : AbstractWrapper(client) {
         return VolumeService(client).getVoluteTypes()
     }
 
-    fun createVolumeType(typeName: String, specs: Map<String, String>) {
+    fun createVolumeType(typeName: String, specs: Map<String, String>?) {
         VolumeService(client).createVolumeType(typeName, specs)
+    }
+
+    fun deleteVolumeType(typeName: String) {
+        VolumeService(client).deleteVolumeType(typeName)
     }
 
     fun getBackups(): List<BackupData> {
         return BackupService(client).getBackups()
     }
 
-    fun createBackup(name: String, description: String, volumeName: String) {
+    fun createBackup(backupName: String, description: String?, volumeName: String) {
         BackupService(client).createBackup(
-            name = name,
+            backupName = backupName,
             description = description,
             volumeName = volumeName
         )
+    }
+
+    fun restoreBackup(backupName: String, newName: String?, volumeName: String?) {
+        BackupService(client).restoreBackup(
+            backupName = backupName,
+            newName = newName,
+            volumeName = volumeName
+        )
+    }
+
+    fun deleteBackup(backupName: String) {
+        BackupService(client).deleteBackup(backupName)
     }
 
     fun getSnapshots(): List<SnapshotData> {
@@ -64,6 +80,10 @@ class BlockStorageWrapper(client: OSClientV3) : AbstractWrapper(client) {
             description = description,
             volumeName = volumeName
         )
+    }
+
+    fun updateSnapshot(snapshotName: String, newName: String?, description: String?) {
+        SnapshotService(client).updateSnapshot(snapshotName, newName, description)
     }
 
     fun deleteSnapshot(snapshotName: String) {

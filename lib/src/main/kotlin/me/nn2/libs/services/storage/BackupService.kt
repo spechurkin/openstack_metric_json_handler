@@ -17,18 +17,33 @@ class BackupService(client: OSClientV3) : AbstractMetricService(client) {
         return client.blockStorage().backups().list().firstOrNull { it.name == backupName }
     }
 
-    fun createBackup(name: String, description: String, volumeName: String) {
-        if (getBackup(name) == null) {
+    fun createBackup(backupName: String, description: String?, volumeName: String) {
+        val volumeId = volumeService.getVolume(volumeName)!!.id ?: volumeName
+
+        if (getBackup(backupName) == null) {
             client.blockStorage().backups().create(
                 Builders.volumeBackupCreate()
-                    .name(name)
+                    .name(backupName)
                     .description(description)
-                    .volumeId(volumeService.getVolume(volumeName)!!.id)
+                    .volumeId(volumeId)
                     .build()
             )
         } else {
-            createBackup(addSymbolsToCopy(name), description, volumeName)
+            createBackup(addSymbolsToCopy(backupName), description, volumeName)
         }
+    }
+
+    fun restoreBackup(backupName: String, newName: String?, volumeName: String?) {
+        if (newName != null) {
+            client.blockStorage().backups().restore(getBackup(backupName)!!.id, newName, null)
+        } else {
+            client.blockStorage().backups()
+                .restore(getBackup(backupName)!!.id, null, VolumeService(client).getVolume(volumeName)!!.id)
+        }
+    }
+
+    fun deleteBackup(backupName: String) {
+        client.blockStorage().backups().delete(getBackup(backupName)!!.id)
     }
 
     fun convertBackupToDto(backup: VolumeBackup): BackupData {

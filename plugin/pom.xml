@@ -6,7 +6,7 @@
 
     <groupId>me.nn2</groupId>
     <artifactId>nn2openstackplugin</artifactId>
-    <version>0.3.4</version>
+    <version>0.3.5</version>
 
     <properties>
         <ktor.version>2.3.7</ktor.version>

@@ -32,6 +32,10 @@ class SnapshotService(client: OSClientV3) : AbstractMetricService(client) {
         client.blockStorage().snapshots().create(volumeSnapshot)
     }
 
+    fun updateSnapshot(snapshotName: String, newName: String?, description: String?) {
+        client.blockStorage().snapshots().update(getSnapshot(snapshotName)!!.id, newName, description)
+    }
+
     fun deleteSnapshot(snapshotName: String) {
         client.blockStorage().snapshots().delete(getSnapshot(snapshotName)!!.id)
     }

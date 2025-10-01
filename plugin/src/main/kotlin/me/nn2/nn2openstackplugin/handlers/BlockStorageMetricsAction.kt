@@ -17,13 +17,22 @@ class BlockStorageMetricsAction(private val wrapper: OpenStackWrapper) : BaseRes
         return listOf(
             RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.STORAGE_PATH}/volumes"),
             RestHandler.Route(RestRequest.Method.POST, "${GlobalSettings.STORAGE_PATH}/volumes/create"),
+            RestHandler.Route(RestRequest.Method.PUT, "${GlobalSettings.STORAGE_PATH}/volumes/update"),
+            RestHandler.Route(RestRequest.Method.DELETE, "${GlobalSettings.STORAGE_PATH}/volumes/delete"),
 
             RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.STORAGE_PATH}/volumeTypes"),
+            RestHandler.Route(RestRequest.Method.POST, "${GlobalSettings.STORAGE_PATH}/volumeTypes/create"),
+            RestHandler.Route(RestRequest.Method.DELETE, "${GlobalSettings.STORAGE_PATH}/volumeTypes/delete"),
 
             RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.STORAGE_PATH}/backups"),
+            RestHandler.Route(RestRequest.Method.POST, "${GlobalSettings.STORAGE_PATH}/backups/create"),
+            RestHandler.Route(RestRequest.Method.PUT, "${GlobalSettings.STORAGE_PATH}/backups/restore"),
+            RestHandler.Route(RestRequest.Method.DELETE, "${GlobalSettings.STORAGE_PATH}/backups/delete"),
 
             RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.STORAGE_PATH}/snapshots"),
             RestHandler.Route(RestRequest.Method.POST, "${GlobalSettings.STORAGE_PATH}/snapshots/create"),
+            RestHandler.Route(RestRequest.Method.PUT, "${GlobalSettings.STORAGE_PATH}/snapshots/update"),
+            RestHandler.Route(RestRequest.Method.DELETE, "${GlobalSettings.STORAGE_PATH}/snapshots/delete"),
 
             RestHandler.Route(RestRequest.Method.GET, "${GlobalSettings.STORAGE_PATH}/services")
         )
